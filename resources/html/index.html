@@ -1,0 +1,351 @@
+<!-- 
+    Sketchy
+    Copyright (C) 2015 Matthew Havlovick
+    http://www.quickdrawbot.com
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Contact Info:
+
+Matt Havlovick
+QuickDraw
+470 I St
+Washougal, WA 98671
+
+matt@quickdrawbot.com
+http://www.quickdrawbot.com
+
+This General Public License does not permit incorporating your program into
+proprietary programs.  If your program is a subroutine library, you may
+consider it more useful to permit linking proprietary applications with the
+library.  If this is what you want to do, use the GNU Lesser General
+Public License instead of this License.
+
+ -->
+ 
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Sketchy</title>
+		<link rel="stylesheet" href="jquery-ui/jquery-ui.css">
+		<link rel="stylesheet" href="jquery-grid/css/ui.jqgrid.css">
+		
+		<style>
+			.hidden{
+			    display: none;
+			}
+		
+			.fileName{
+				font-family:"Times New Roman", Times, serif
+			}
+			
+			#fileList{
+				list-style-type:none;
+			}
+			#gridpager_left{
+				width: 400px;
+			}
+			
+			.no-close .ui-dialog-titlebar-close{
+			    display: none;
+			}
+			
+			.ui-jqgrid-bdiv{
+			    max-height: 340px;
+			}
+			
+			.displayServoPenConfiguration {
+				display: none;
+			}
+			.displaySolenoidPenConfiguration {
+				display: none;
+			}			
+						
+			
+		
+		</style>
+		
+		<script src="jquery/jquery-2.1.1.min.js"></script>
+		<script src="jquery-ui/jquery-ui.min.js"></script>
+		<script src="jquery-grid/jquery.jqGrid.min.js"></script>
+		<script type="text/javascript" src="jquery-grid/i18n/grid.locale-en.js"></script>
+		
+		<script src="jquery/jquery.serialize-object.min.js"></script>
+		<script src="js/form2js.js"></script>
+		<script src="js/js2form.js"></script>
+		<script src="js/sketchy.js"></script>
+	
+	</head>
+	
+	<body>
+		<div>
+			<div id="tabs">
+				<ul>
+						<li><a href="#tabs-1">Image</a></li>
+						<li><a href="#tabs-2" id="tabs-2-tab">Settings</a></li>
+				</ul>
+				
+				<div id="tabs-1">
+			  		<table>
+				  		<tr>
+					  		<td valign="top">
+					  			<div>
+						  			<div id="jqgrid">
+									    <table id="grid"></table>
+									    <div id="gridpager"></div>
+									</div>
+									<div class="hidden">
+										<form id="form">
+											<input id="uploadFile" type="file" name="uploadFile"/><br/>
+											<div id="response"></div>
+										</form>
+									</div>									
+					  			</div>
+					  			<br/><br/><br/><br/>
+					  			<div><input type="button" id="shutdown" name="shutdown" value="Shut Down"/></div>
+							</td>
+					  		<td valign="top">
+						 	  	<div style="width: 600px">
+									<img src="" id="displayImage" width="600px"/>
+								</div> 	
+						  	</td>
+				  		</tr>
+					</table>
+			  	</div>
+			  	
+			  	<div id="tabs-2">
+				  	<div id="settings-tabs">
+						<ul>
+							<li><a href="#settings-tab-drawing-page" id="settings-tab-drawing">Drawing</a></li>
+							<li><a href="#settings-tab-pathing-page" id="settings-tab-pathing">Pathing</a></li>
+							<li><a href="#settings-tab-plotter-page" id="settings-tab-plotter">Plotter</a></li>
+							<li><a href="#settings-tab-hardware-page" id="settings-tab-hardware">Hardware</a></li>
+						</ul>
+						
+						<div id="settings-tab-drawing-page">
+					  		<form name="drawingSettingsForm" id="drawingSettingsForm">
+						  		<div id="drawingPropertiesDiv"></div>
+						  		<table>
+									<tr>
+										<td>
+											<input type="button" id="saveDrawingSettingsButton" value="Save Settings"/>
+										</td>
+									</tr>
+								</table>
+							</form>
+					  	</div>
+						
+						<div id="settings-tab-pathing-page">
+					  		<form name="pathingSettingsForm" id="pathingSettingsForm">
+						  		<table>
+									<tr valign="top">	
+						  				<td colspan="2">
+								 			<fieldset>
+								    			<legend>Pathing Processor</legend>
+								   				<table>
+								   					<tr>
+								   						<td>Controller Class</td>
+								   						<td>
+								   							<select id="pathingProcessorClass">
+								   							</select>
+														</td>
+								   					</tr>
+								   				</table>
+								   			</fieldset>
+								   		</td>
+								   	</tr>					  		
+						  		</table>
+						  		
+						  		<div id="pathingPropertiesDiv"></div>
+						  		<table>
+									<tr>
+										<td>
+											<input type="button" id="savePathingSettingsButton" value="Save Settings"/>
+										</td>
+									</tr>
+								</table>
+							</form>
+					  	</div>
+					  							
+						<div id="settings-tab-plotter-page">
+					  		<form name="plotterSettingsForm" id="plotterSettingsForm">
+						  		<table>
+									<tr valign="top">	
+						  				<td colspan="2">
+								 			<fieldset>
+								    			<legend>Plotter</legend>
+								   				<table>
+								   					<tr>
+								   						<td>Controller Class</td>
+								   						<td>
+								   							<select id="plotterControllerClass">
+								   							</select>
+														</td>
+								   					</tr>
+								   				</table>
+								   			</fieldset>
+								   		</td>
+								   	</tr>					  		
+						  		</table>
+						  		
+						  		<div id="plotterPropertiesDiv"></div>
+						  		<table>
+									<tr>
+										<td>
+											<input type="button" id="savePlotterSettingsButton" value="Save Settings"/>
+										</td>
+									</tr>
+								</table>
+							</form>
+					  	</div>
+						
+						
+						<div id="settings-tab-hardware-page">
+					  		<form name="hardwareSettingsForm" id="hardwareSettingsForm">
+						  		<table>
+									<tr valign="top">	
+						  				<td colspan="2">
+								 			<fieldset>
+								    			<legend>Hardware</legend>
+								   				<table>
+								   					<tr>
+								   						<td>Controller Class</td>
+								   						<td>
+								   							<select id="hardwareControllerClass">
+								   							</select>
+														</td>
+								   					</tr>
+								   				</table>
+								   			</fieldset>
+								   		</td>
+								   	</tr>					  		
+						  		</table>
+						  		
+						  		<div id="hardwarePropertiesDiv"></div>
+						  		<table>
+									<tr>
+										<td>
+											<input type="button" id="saveHardwareSettingsButton" value="Save Settings"/>'
+										</td>
+									</tr>
+								</table>
+							</form>
+					  	</div>
+					  	
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="dialog-render" title="Render">
+			<div>
+		  		<form name="renderForm" id="renderForm">
+		  			<input type="hidden" name="class" value="com.sketchy.image.RenderedImageAttributes"/>
+		  			<!--  sourceImageName is the Selected Image Name -->
+		  			<input type="hidden" name="imageName" id="sourceImageName"/>
+		  			<input type="hidden" id="contrast" name="contrast"/>
+		  			<input type="hidden" id="brightness" name="brightness"/>
+		  			<input type="hidden" id="threshold" name="threshold"/>
+		  			
+		  			<br/>
+		  			Drawing Size: <select name="drawingSize" id="drawingSize"></select><br/><br/>
+		  			
+		  			Pen Width: <select style="width: 200px;" class="imageOption" id="penWidth" name="penWidth"></select><br/><br/>
+		  			
+					<fieldset>
+					<legend>Process Type</legend>		  			
+						<input type="radio" class="imageOption" name="renderOption" value="RENDER_NORMAL" checked="checked"/>Normal &nbsp;
+						<input type="radio" class="imageOption" name="renderOption" value="RENDER_HALFTONE"/>Halftone &nbsp;
+						<input type="radio" class="imageOption" name="renderOption" value="RENDER_EDGE_DETECTION"/>Edge Detection &nbsp;
+					</fieldset>
+					<br/>							  			
+					<fieldset>
+					<legend>Center</legend>
+						<input type="radio" class="imageOption" name="centerOption" value="CENTER_BOTH" checked="checked"/>Both &nbsp;
+						<input type="radio" class="imageOption" name="centerOption" value="CENTER_HORIZONTAL"/>Horizontal &nbsp;
+						<input type="radio" class="imageOption" name="centerOption" value="CENTER_VERTICAL"/>Verticle &nbsp;
+						<input type="radio" class="imageOption" name="centerOption" value="CENTER_NONE"/>None
+					</fieldset>
+					<br/>	
+					<fieldset>
+					<legend>Rotate Image</legend>
+						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_NONE" checked="checked"/>None &nbsp;
+						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_90"/>90 Degrees &nbsp;
+						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_180"/>180 Degrees &nbsp;
+						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_270"/>270 Degrees
+					</fieldset>
+					<br/>	
+					<fieldset>
+					<legend>Flip Image</legend>
+						<input type="radio" class="imageOption" name="flipOption" value="FLIP_NONE" checked="checked"/>None &nbsp;
+						<input type="radio" class="imageOption" name="flipOption" value="FLIP_HORIZONTAL"/>Horizontal &nbsp;
+						<input type="radio" class="imageOption" name="flipOption" value="FLIP_VERTICAL"/>Vertical &nbsp;
+						<input type="radio" class="imageOption" name="flipOption" value="FLIP_BOTH"/>Both
+					</fieldset>
+					<br/>
+					Contrast: <span id="contrastValue">50</span>
+					<div id="contrastSlider"></div>
+					<br/>
+					Brightness: <span id="brightnessValue">50</span>
+					<div id="brightnessSlider"></div>
+					<br/>	
+					Threshold: <span id="thresholdValue">50</span>
+					<div id="thresholdSlider"></div>
+					<br/>
+				</form>
+		 	</div>		
+
+			<p>
+		  		<span id="dialog-renderMessage" style="margin:0 7px 50px 0"></span>
+		  		<div id="renderProgressBar"></div>
+			</p>
+		</div> 
+		
+		<div id="dialog-drawingStatus" title="Drawing Status">
+			<br/>
+			Draw Speed: <span id="drawSpeedValue">0 mm/sec</span>
+			<div id="drawSpeedSlider"></div>
+			<br/>
+			Move Speed: <span id="moveSpeedValue">0 mm/sec</span>
+			<div id="moveSpeedSlider"></div>
+			<br/>	
+		
+			<p>
+		  		<span id="dialog-drawingMessage" style="margin:0 7px 50px 0"></span>
+		  		<div id="drawingProgressBar"></div>
+			</p>
+		</div> 		
+		
+		<div id="dialog-status" title="Sketchy Status"> 
+			<p>
+		  		<span id="dialog-statusMessage" style="margin:0 7px 50px 0"></span>
+		  	</p>
+		</div>
+		
+		<div id="dialog-message" title="Message">
+			<p>
+		  		<span id="dialog-messageText" style="margin:0 7px 50px 0"></span>
+			</p>
+		</div> 
+		
+		<div id="dialog-error" title="Error">
+			<p>
+		  		<span id="dialog-errorText" style="margin:0 7px 50px 0"></span>
+			</p>
+		</div>  
+		<div id="footercopyright">©2015 QuickDraw, Matt Havlovick, All rights reserved.</div>
+	</body>
+</html>
