@@ -8,9 +8,7 @@
   <packaging>jar</packaging>
 
   <name>Sketchy</name>
-  <url>http://maven.apache.org</url>
-  
-
+  <url>http://www.quickdrawbot.com</url>
   
   <repositories>
 		<repository>
@@ -24,11 +22,10 @@
 		</repository>
 	</repositories>
   
-  
 	<build>
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${artifactId}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
@@ -64,13 +61,6 @@
 			  </execution>
 			</executions>
 		  </plugin>
-		  <!--
-		 <plugin>
-			<artifactId>maven-resources-plugin</artifactId>
-            <version>2.7</version>
-            <configuration>   
-            </configuration>
-        </plugin>-->
 		<plugin>
 		  <groupId>org.apache.maven.plugins</groupId>
 		  <artifactId>maven-jar-plugin</artifactId>

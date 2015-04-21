@@ -1,3 +1,6 @@
 target
 lib
 /*.jar
+/bin
+/.classpath
+/.project
