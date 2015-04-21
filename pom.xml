@@ -9,6 +9,9 @@
 
   <name>Sketchy</name>
   <url>http://maven.apache.org</url>
+  
+
+  
   <repositories>
 		<repository>
 			<id>oss-snapshots-repo</id>
@@ -20,6 +23,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+  
   
 	<build>
 		<directory>target</directory>
@@ -33,16 +37,6 @@
 		  <resource>
 			<directory>src/main/resources</directory>
 		  </resource>
-			<resource>
-				<directory>${basedir}</directory>
-				<targetPath>${basedir}/build</targetPath>
-				<includes>
-                    <include>marvin/</include>
-                    <include>resources/</include>
-                    <include>*.bat</include>
-                </includes>
-				<filtering>false</filtering>
-			</resource>	
 		</resources>
 		<testResources>
 		  <testResource>
@@ -62,7 +56,7 @@
 				  <goal>copy-dependencies</goal>
 				</goals>
 				<configuration>
-				  <outputDirectory>${basedir}/build/lib</outputDirectory>
+				  <outputDirectory>${basedir}/lib</outputDirectory>
 				  <overWriteReleases>false</overWriteReleases>
 				  <overWriteSnapshots>false</overWriteSnapshots>
 				  <overWriteIfNewer>true</overWriteIfNewer>
@@ -70,25 +64,24 @@
 			  </execution>
 			</executions>
 		  </plugin>
+		  <!--
 		 <plugin>
 			<artifactId>maven-resources-plugin</artifactId>
             <version>2.7</version>
             <configuration>   
             </configuration>
-        </plugin>
+        </plugin>-->
 		<plugin>
 		  <groupId>org.apache.maven.plugins</groupId>
 		  <artifactId>maven-jar-plugin</artifactId>
 		  <version>2.3.1</version>
 		  <configuration>
-			<outputDirectory>${basedir}/build</outputDirectory>
+			<outputDirectory>${basedir}</outputDirectory>
 		  </configuration>
 		</plugin>		
     </plugins>		
 	
 	</build>
-
-  
   
   <properties>
 	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

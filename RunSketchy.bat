@@ -1,1 +1,1 @@
-java -cp .;.\Sketchy-1.0-SNAPSHOT.jar;.\lib\* com.quickdrawbot.sketchy.server.HttpServer
+java -cp .;.\*;.\lib\* com.sketchy.server.HttpServer
