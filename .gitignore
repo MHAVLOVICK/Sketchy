@@ -1,7 +1,9 @@
 target
 lib
+upload
 /*.jar
 /bin
 /.classpath
 /.project
 /SketchyProperties.json
+

@@ -57,7 +57,7 @@ import com.sketchy.pathing.DrawingProcessorThread;
 public class HttpServer {
 
 	public static final File SKETCHY_PROPERTY_FILE=new File("SketchyProperties.json");
-	public static final File FILE_UPLOAD_DIRECTORY = new File("resources" + File.separator + "html" + File.separator + "upload");
+	public static final File FILE_UPLOAD_DIRECTORY = new File("upload");
 	
 	public static ImageProcessingThread imageProcessingThread = null;
 	public static DrawingProcessorThread drawingProccessorThread = null;
@@ -94,8 +94,15 @@ public class HttpServer {
         resourceContext.setResourceBase("./resources/html");
         resourceContext.setHandler(resourceHandler);
         
+        ResourceHandler uploadResourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
+        ContextHandler uploadResourceContext = new ContextHandler();
+        uploadResourceContext.setContextPath("/");
+        uploadResourceContext.setResourceBase("upload");
+        uploadResourceContext.setHandler(uploadResourceHandler);
+        
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] { resourceContext, servletContext });
+        contexts.setHandlers(new Handler[] { resourceContext, servletContext, uploadResourceHandler});
         server.setHandler(contexts);
 
         server.start();
