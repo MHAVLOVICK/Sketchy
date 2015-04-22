@@ -95,14 +95,14 @@ public class HttpServer {
         resourceContext.setHandler(resourceHandler);
         
         ResourceHandler uploadResourceHandler = new ResourceHandler();
-        resourceHandler.setDirectoriesListed(true);
+        uploadResourceHandler.setDirectoriesListed(true);
         ContextHandler uploadResourceContext = new ContextHandler();
         uploadResourceContext.setContextPath("/upload");
         uploadResourceContext.setResourceBase("./upload");
         uploadResourceContext.setHandler(uploadResourceHandler);
         
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] { resourceContext, servletContext, uploadResourceHandler});
+        contexts.setHandlers(new Handler[] { resourceContext, servletContext, uploadResourceContext});
         server.setHandler(contexts);
 
         server.start();
