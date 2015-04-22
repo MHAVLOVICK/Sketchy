@@ -97,8 +97,8 @@ public class HttpServer {
         ResourceHandler uploadResourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
         ContextHandler uploadResourceContext = new ContextHandler();
-        uploadResourceContext.setContextPath("/");
-        uploadResourceContext.setResourceBase("upload");
+        uploadResourceContext.setContextPath("/upload");
+        uploadResourceContext.setResourceBase("./upload");
         uploadResourceContext.setHandler(uploadResourceHandler);
         
         ContextHandlerCollection contexts = new ContextHandlerCollection();
