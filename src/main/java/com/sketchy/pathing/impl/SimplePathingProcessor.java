@@ -216,6 +216,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 	    int ypos = 0;
 		int count=0;
 	    statusMessage = "Drawing";
+	    int penLifts=0;
     	List<Point> history = new ArrayList<Point>(HISTORY_INITIAL_SIZE);
 		while(true){
 			if (cancel) break;
@@ -231,6 +232,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 	    	double plotterXPos = xpos/widthDotsPerMM+xOffset;
 	    	double plotterYPos = ypos/heightDotsPerMM;
 	    	
+	    	penLifts++;
 			SketchyContext.plotterController.moveTo(plotterXPos, plotterYPos);
 			SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos);
 
@@ -250,8 +252,9 @@ public class SimplePathingProcessor extends PathingProcessor {
 	   	    	}
 	   	    	if (direction!=null){
 	   	    		count++;
-	   	    		if ((count%500)==0){
+	   	    		if ((count%100)==0){
 	   	    			progress = (int) ((count/(double)totalCount) * 100);
+	   	    			statusMessage = "Drawing. Total Pen Lifts: " + penLifts;
 	   	    		}
 	   	    		int dir = direction.intValue();
 	   	    		lastDirection=dir;

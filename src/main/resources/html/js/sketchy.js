@@ -167,6 +167,13 @@ $( document ).ready(function() {
 	});	
 	
 	
+	$("#upgradeSoftwareButton").on("click", function(e){
+		upgradeSoftware();
+	});
+	
+	
+	$("#uploadUpgradeFile").change(uploadUpgradeFile);
+	
 	$("#uploadFile").change(uploadFile);
 	
 	$(".imageOption").on("change", function(e){
@@ -176,6 +183,11 @@ $( document ).ready(function() {
 	$("#shutdown").on("click", function(e){
 		shutDown();
 	});
+	
+	$("#restart").on("click", function(e){
+		restart();
+	});
+	
 
 	// Setup Drawing Dialog Window
 	$( "#dialog-drawingStatus" ).dialog({
@@ -470,15 +482,15 @@ function defaultErrorCallback(message){
 	showError("ERROR: " + message);
 }
 
-function jsonGetRequest(URL, jsonString, successCallback, errorCallback){
-	jsonRequest(URL, "GET", jsonString, successCallback, errorCallback);
+function jsonGetRequest(URL, jsonString, successCallback, errorCallback, ignoreCommunicationError){
+	jsonRequest(URL, "GET", jsonString, successCallback, errorCallback, ignoreCommunicationError);
 }
 
-function jsonPostRequest(URL, jsonString, successCallback, errorCallback){
-	jsonRequest(URL, "POST", jsonString, successCallback, errorCallback);
+function jsonPostRequest(URL, jsonString, successCallback, errorCallback, ignoreCommunicationError){
+	jsonRequest(URL, "POST", jsonString, successCallback, errorCallback, ignoreCommunicationError);
 }
 
-function jsonRequest(URL, method, jsonString, successCallback, errorCallback){
+function jsonRequest(URL, method, jsonString, successCallback, errorCallback, ignoreCommunicationError){
 	jQuery.ajax({
        	url: URL,
       	type: method,
@@ -486,7 +498,7 @@ function jsonRequest(URL, method, jsonString, successCallback, errorCallback){
       	data: jsonString,
       	cache: false,
        	processData: true,
-       	timeout:15000,
+       	timeout:10000,
        	success: function (data) {
        		if (data.status==="SUCCESS") {
        			if (successCallback){
@@ -509,7 +521,9 @@ function jsonRequest(URL, method, jsonString, successCallback, errorCallback){
        		}
        	},
        	error: function (XMLHttpRequest, textStatus, errorThrown){
-			defaultErrorCallback("Server Communication Error! "+ textStatus + "(" + errorThrown + ")");
+       		if ((ignoreCommunicationError==null) || (ignoreCommunicationError!=true)){
+       			defaultErrorCallback("Server Communication Error! "+ textStatus + "(" + errorThrown + ")");
+       		}
        	}
 	});
 	
@@ -778,6 +792,19 @@ function populateDrawingSettings(data){
 	}
 }
 
+function upgradeSoftware(){
+	jsonPostRequest("/servlet/UpgradeSoftware","", function(data){
+   		$("#upgradeMessage").html("The Software has been upgraded, but a reboot is required!");
+		showMessage("Sketchy has been Upgraded!");
+	});
+}
+
+function restart(){
+	jsonPostRequest("/servlet/Restart","", function(data){
+		clearTimeout(__updateDrawingStatusTimer);
+   		showMessage("The Raspberry Pi is now Restarting. Please refresh the browser in 60 seconds!", 60000);
+	});
+}
 
 function shutDown(){
 	jsonPostRequest("/servlet/Shutdown","", function(data){
@@ -875,9 +902,10 @@ function updateRenderStatus() {
 				if ((data.renderStatus==="INIT") || (data.renderStatus==="RENDERING")){
 				    $("#dialog-renderMessage").text(data.renderMessage);
 				    $( "#renderProgressBar" ).progressbar({value: data.progress});
-		    		setTimeout('updateRenderStatus()',500);
+		    		setTimeout('updateRenderStatus()',1000);
 				} else if (data.renderStatus==="ERROR"){ 
 					showError(data.renderMessage);
+		    		setTimeout('updateRenderStatus()',1000);
 				} else {
 					$("#dialog-render" ).dialog( "close" );
 					if (data.renderStatus==="CANCELLED"){
@@ -891,7 +919,7 @@ function updateRenderStatus() {
 			} else {
 				$("#dialog-render" ).dialog( "close" ); // make sure it's closed
 			}
-		}
+		},null,true
 	);
 }
 
@@ -899,7 +927,6 @@ function updateRenderStatus() {
 function updateDrawingStatus() {
 	jsonGetRequest("/servlet/GetDrawingStatus","", 
 		function(data, message){
-		
 			if (data!=null){
 				$("#dialog-drawingMessage").html(data.drawingStatusMessage);
 				if ((data.drawingStatus==="") || 
@@ -937,9 +964,9 @@ function updateDrawingStatus() {
 		}, 
 		function(data){
 			showError(data.message);
-	    }
+	    },true
 	);
-	__updateDrawingStatusTimer=setTimeout('updateDrawingStatus()',500);
+	__updateDrawingStatusTimer=setTimeout('updateDrawingStatus()',1000);
 }
 
 function addListFile(filename){
@@ -966,7 +993,7 @@ function uploadFile(){
         		$( "#dialog-status" ).dialog( "open" );
         	}
            	jQuery.ajax({
-               	url: "/fileUpload/upload",
+               	url: "/imageUpload/upload",
               	type: "POST",
                	data: formdata,
                	processData: false,               	
@@ -996,6 +1023,44 @@ function uploadFile(){
         }
    	}
 }
+
+function uploadUpgradeFile(){
+	$("#upgradeMessage").html="";
+	$("#upgradeSoftwareButton").hide();
+	
+	if (($("#uploadUpgradeFile"))[0].files.length > 0) {
+		var file = ($("#uploadUpgradeFile"))[0].files[0];
+		var ext = file.name.split('.').pop();
+		if (ext!=file.name) {
+			formdata = new FormData();
+            formdata.append("file", file);
+           	jQuery.ajax({
+               	url: "/upgradeUpload/upload",
+              	type: "POST",
+               	data: formdata,
+               	processData: false,               	
+               	contentType: false,
+               	success: function (json) {
+               		var data = JSON.parse(json);
+               		if (data.status==="SUCCESS") {
+               			$("#upgradeMessage").html("Ready to upgrade to version " + data.version);
+               			$("#upgradeSoftwareButton").show();
+               		} else if (data.status==="ERROR"){
+           				defaultErrorCallback(data.message);
+               		} else {
+           				defaultErrorCallback("Unexpected Response." + data.message);
+               		}
+               	},
+               	error: function (XMLHttpRequest, textStatus, errorThrown){
+        			defaultErrorCallback(textStatus + "(" + errorThrown + ")");
+               	}
+           	});
+        } else {
+        	showError('Not a valid upgrade file!');
+        }
+   	}
+}
+
 
 function getRenderParameters(){
 	return form2js('renderForm', '.', true,null,false);

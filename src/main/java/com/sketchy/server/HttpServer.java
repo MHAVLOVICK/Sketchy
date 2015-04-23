@@ -37,6 +37,7 @@ Public License instead of this License.
 package com.sketchy.server;
 
 import java.io.File;
+import java.net.URL;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -56,43 +57,71 @@ import com.sketchy.pathing.DrawingProcessorThread;
 
 public class HttpServer {
 
+	public static final File SOURCE_HTML_FILES_DIRECTORY = new File("src/main/resources/html");
+	
 	public static final File SKETCHY_PROPERTY_FILE=new File("SketchyProperties.json");
-	public static final File FILE_UPLOAD_DIRECTORY = new File("upload");
+	public static final File IMAGE_UPLOAD_DIRECTORY = new File("upload");
+	//public static final File IMAGE_UPLOAD_DIRECTORY = new File("upload");
+	//UPGRADE_FILE_UPLOAD_DIRECTORY
+	//public static final File FILE_UPLOAD_DIRECTORY = new File("upload");
+	
+	
 	
 	public static ImageProcessingThread imageProcessingThread = null;
 	public static DrawingProcessorThread drawingProccessorThread = null;
 
 	public static File getUploadFile(String filename){
-    	return new File(FILE_UPLOAD_DIRECTORY.getPath() + File.separator + filename);
+    	return new File(IMAGE_UPLOAD_DIRECTORY.getPath() + File.separator + filename);
 	}
 	
 	public void start() throws Exception {
-    	if (!FILE_UPLOAD_DIRECTORY.exists()) {
-    		if (!FILE_UPLOAD_DIRECTORY.mkdir()) {
-    			throw new Exception("Error Creating Upload Directory '" + FILE_UPLOAD_DIRECTORY.getAbsolutePath() + "!");
+    	if (!IMAGE_UPLOAD_DIRECTORY.exists()) {
+    		if (!IMAGE_UPLOAD_DIRECTORY.mkdir()) {
+    			throw new Exception("Error Creating Upload Directory '" + IMAGE_UPLOAD_DIRECTORY.getAbsolutePath() + "!");
     		}
     	}
 
 		Server server = new Server(80);
 
         // File Upload Handler
-        ServletHolder fileUploadHolder = new ServletHolder(new FileUploadServlet());
+        ServletHolder imageUploadHolder = new ServletHolder(new ImageUploadServlet());
         MultipartConfigElement multipartConfig = new MultipartConfigElement(FileUtils.getTempDirectory().getPath());
-        fileUploadHolder.getRegistration().setMultipartConfig(multipartConfig);
+        imageUploadHolder.getRegistration().setMultipartConfig(multipartConfig);
+        
+        // File Upgrade Handler
+        ServletHolder upgradeUploadHolder = new ServletHolder(new UpgradeUploadServlet());
+        multipartConfig = new MultipartConfigElement(FileUtils.getTempDirectory().getPath());
+        upgradeUploadHolder.getRegistration().setMultipartConfig(multipartConfig);
         
         ServletHandler servletHandler = new ServletHandler();
         ServletContextHandler servletContext = new ServletContextHandler();
         servletContext.setHandler(servletHandler);
         servletContext.addServlet(new ServletHolder(new JsonServlet()), "/servlet/*");
-        servletContext.addServlet(fileUploadHolder, "/fileUpload/*");
+        servletContext.addServlet(imageUploadHolder, "/imageUpload/*");
+        servletContext.addServlet(upgradeUploadHolder, "/upgradeUpload/*");
         
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setDirectoriesListed(false);
+        // if we are developing, we want to pull the files from the filesystem, not the .jar file
         ContextHandler resourceContext = new ContextHandler();
-        resourceContext.setWelcomeFiles(new String[] { "index.html" });
-        resourceContext.setContextPath("/");
-        resourceContext.setResourceBase("./resources/html");
-        resourceContext.setHandler(resourceHandler);
+        if (SOURCE_HTML_FILES_DIRECTORY.exists()){
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(false);
+            resourceContext.setWelcomeFiles(new String[] { "index.html" });
+            resourceContext.setContextPath("/");
+            resourceContext.setResourceBase(SOURCE_HTML_FILES_DIRECTORY.getCanonicalPath());
+            resourceContext.setHandler(resourceHandler);
+        } else {
+	        ResourceHandler resourceHandler = new ResourceHandler();
+	        resourceHandler.setDirectoriesListed(false);
+	        resourceContext.setWelcomeFiles(new String[] { "index.html" });
+	        resourceContext.setContextPath("/");
+	        URL url = server.getClass().getClassLoader().getResource("html");
+	        if (url==null){
+	        	throw new Exception("Can not find html resources!");
+	        }
+	        String resourceBase = url.toExternalForm();
+	        resourceContext.setResourceBase(resourceBase);
+	        resourceContext.setHandler(resourceHandler);
+        }
         
         ResourceHandler uploadResourceHandler = new ResourceHandler();
         uploadResourceHandler.setDirectoriesListed(true);

@@ -105,7 +105,7 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 		return metaData;
 	}
 
-	private PathingPattern pathingPattern=PathingPattern.FollowLeft;
+	private PathingPattern pathingPattern=PathingPattern.Random;
 	private PathingDirectionPreference pathingDirectionPreference=PathingDirectionPreference.NoPreference;
 	private PathingBacktrackOption pathingBacktrackOption = PathingBacktrackOption.Backtrack;
 
@@ -123,8 +123,7 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 	}
 
 
-	public void setPathingDirectionPreference(
-			PathingDirectionPreference pathingDirectionPreference) {
+	public void setPathingDirectionPreference(PathingDirectionPreference pathingDirectionPreference) {
 		this.pathingDirectionPreference = pathingDirectionPreference;
 	}
 
@@ -134,8 +133,7 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 	}
 
 
-	public void setPathingBacktrackOption(
-			PathingBacktrackOption pathingBacktrackOption) {
+	public void setPathingBacktrackOption(PathingBacktrackOption pathingBacktrackOption) {
 		this.pathingBacktrackOption = pathingBacktrackOption;
 	}
 	

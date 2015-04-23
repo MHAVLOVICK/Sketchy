@@ -40,44 +40,37 @@ import java.io.File;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.FileUtils;
-
-import com.sketchy.image.ImageAttributes;
-import com.sketchy.server.HttpServer;
 import com.sketchy.server.JSONServletResult;
 import com.sketchy.server.ServletAction;
 import com.sketchy.server.JSONServletResult.Status;
 
-public class DeleteImage extends ServletAction {
-
+public class UpgradeSoftware extends ServletAction {
 	@Override
 	public JSONServletResult execute(HttpServletRequest request) throws Exception {
 		JSONServletResult jsonServletResult = new JSONServletResult(Status.SUCCESS);
-		String imageName = request.getParameter("imageName");
-
-		// if it doesn't end with .rendered, this is a source image.. delete all the rendered files 
-		if (!imageName.endsWith(".rendered")){
-			File uploadDirectory = HttpServer.IMAGE_UPLOAD_DIRECTORY;
-			File[] files = uploadDirectory.listFiles();
-
-			// delete all the rendered files
-			for (int idx=0;idx<files.length;idx++){
-				File file = files[idx];
-				String fileName = file.getName();
-				if (fileName.startsWith(imageName)){
-					if (fileName.endsWith(".rendered.png") ||
-						fileName.endsWith(".rendered.dat")) {
-						FileUtils.deleteQuietly(file);
-					}
-				}
+		try{
+			File upgradeFile = new File("Sketchy.jar.ready");
+			if (!upgradeFile.exists()){
+				throw new Exception("Sketchy Upgrade File not found!");
 			}
+			
+			// rename old file
+			File sketchyFile = new File("Sketchy.jar");
+			File archiveSketchyFile = new File("Sketchy.jar.old");
+			
+			boolean renameSuccessful = sketchyFile.renameTo(archiveSketchyFile);
+			if (!renameSuccessful){
+				throw new Exception("Error archiving existing Sketchy.jar file!");
+			}
+			
+			renameSuccessful = upgradeFile.renameTo(sketchyFile);
+			if (!renameSuccessful){
+				archiveSketchyFile.renameTo(sketchyFile);
+				throw new Exception("Error upgrading Sketchy.jar File!");
+			}
+		} catch (Throwable t){
+			jsonServletResult = new JSONServletResult(Status.ERROR, "Error Saving Hardware Settings! " + t.getMessage());
 		}
-		
-		File dataFile = HttpServer.getUploadFile(ImageAttributes.getDataFilename(imageName));
-		File imageFile = HttpServer.getUploadFile(ImageAttributes.getImageFilename(imageName));
-		FileUtils.deleteQuietly(dataFile);
-		FileUtils.deleteQuietly(imageFile);
-		
 		return jsonServletResult;
 	}
 

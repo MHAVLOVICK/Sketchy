@@ -36,10 +36,12 @@ Public License instead of this License.
 
 package com.sketchy.server;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -50,24 +52,15 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.sketchy.image.SourceImageAttributes;
 import com.sketchy.server.JSONServletResult.Status;
-import com.sketchy.utils.ImageUtils;
 
-public final class FileUploadServlet extends HttpServlet {
+public final class UpgradeUploadServlet extends HttpServlet {
 	
 	private static final int MAX_SIZE = 10000000; // 10Mbytes
-	private static final long serialVersionUID = -6172468221875699668L;
-
-
-	@Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("<h1>Hello SimpleServlet</h1>");
-    }	
+	private static final long serialVersionUID = -6172468221875699663L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	JSONServletResult jsonServletResult = new JSONServletResult(Status.SUCCESS);
@@ -82,36 +75,32 @@ public final class FileUploadServlet extends HttpServlet {
 
 	    		ServletFileUpload servletFileUpload = new ServletFileUpload(factory);
 		    	List<FileItem> files = servletFileUpload.parseRequest(request);
+		    	String version="";
 		    	for (FileItem fileItem:files){
 		    		String uploadFileName = fileItem.getName();
 		    		if (StringUtils.isNotBlank(uploadFileName)){
-		    			
-			    		File uploadFile = HttpServer.getUploadFile(uploadFileName);
-			    		// make sure filename is actually in the upload directory
-			    		// we don't want any funny games
-			    		if (!uploadFile.getParentFile().equals(HttpServer.FILE_UPLOAD_DIRECTORY)){
-			    			throw new RuntimeException("Can not upload File. Invalid directory!");
-			    		}
 
-			    		// if saved ok, then need to add the data file
-			    		SourceImageAttributes sourceImageAttributes = new SourceImageAttributes();
-			    		sourceImageAttributes.setImageName(uploadFileName);
-
-			    		File pngFile = HttpServer.getUploadFile(sourceImageAttributes.getImageFilename());
-			    		if (pngFile.exists()) {
-			    			throw new Exception("Can not Upload file. File '" + uploadFileName +"' already exists!");
-			    		}
-			    		File dataFile = HttpServer.getUploadFile(sourceImageAttributes.getDataFilename());
-
-			    		// Convert the image to a .PNG file
-			    		BufferedImage image=ImageUtils.loadImage(fileItem.getInputStream());
-			    		ImageUtils.saveImage(pngFile, image);
-			    		
-			    		sourceImageAttributes.setWidth(image.getWidth());
-			    		sourceImageAttributes.setHeight(image.getHeight());
-
-			    		FileUtils.writeStringToFile(dataFile, sourceImageAttributes.toJson());
-			    		jsonServletResult.put("imageName", uploadFileName);
+		    			JarInputStream jarInputStream = null;
+		    			try{
+			    			// check to make sure it's a Sketchy File with a Manifest File
+			    			jarInputStream=new JarInputStream(fileItem.getInputStream(), true);
+			    			Manifest manifest = jarInputStream.getManifest();
+			    			if (manifest==null){
+			    				throw new Exception("Invalid Upgrade File!");
+			    			}
+			    			Attributes titleAttributes=manifest.getMainAttributes();
+			    			if ((titleAttributes==null) || (!StringUtils.containsIgnoreCase(titleAttributes.getValue("Implementation-Title"), "Sketchy"))){
+			    				throw new Exception("Invalid Upgrade File!");
+			    			}
+			    			version = titleAttributes.getValue("Implementation-Version");
+		    			} catch (Exception e){
+		    				throw new Exception("Invalid Upgrade File!");
+		    			} finally {
+		    				IOUtils.closeQuietly(jarInputStream);
+		    			}
+		    			// save new .jar file as "ready"
+		    			fileItem.write(new File("Sketchy.jar.ready"));
+		    			jsonServletResult.put("version", version);
 		    		}
 		    	}
     		}

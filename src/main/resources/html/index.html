@@ -133,6 +133,7 @@ Public License instead of this License.
 							<li><a href="#settings-tab-pathing-page" id="settings-tab-pathing">Pathing</a></li>
 							<li><a href="#settings-tab-plotter-page" id="settings-tab-plotter">Plotter</a></li>
 							<li><a href="#settings-tab-hardware-page" id="settings-tab-hardware">Hardware</a></li>
+							<li><a href="#settings-tab-advanced-page" id="settings-tab-advanced">Advanced</a></li>
 						</ul>
 						
 						<div id="settings-tab-drawing-page">
@@ -245,6 +246,37 @@ Public License instead of this License.
 							</form>
 					  	</div>
 					  	
+					  	<div id="settings-tab-advanced-page">
+					  		<form name="upgradeForm" id="upgradeForm">
+						  		<table>
+									<tr valign="top">	
+						  				<td colspan="2">
+								 			<fieldset>
+								    			<legend>Select Upgrade File</legend>
+						   							<form id="uploadUpgradeform">
+														<input id="uploadUpgradeFile" type="file" name="uploadUpgradeFile"/>
+														<br/>
+														<br/>
+														<div id="upgradeMessage"></div>
+													</form>
+								   			</fieldset>
+								   		</td>
+								   	</tr>					  		
+						  		</table>
+						  		
+						  		<div id="upgradeSoftwareDiv"></div>
+						  		<table>
+									<tr>
+										<td>
+											<input type="button" style="display:none" id="upgradeSoftwareButton" value="Upgrade Software"/>'
+											<input type="button" id="restart" value="Reboot Raspberry Pi"/>'
+										</td>
+									</tr>
+								</table>
+							</form>
+					  	</div>
+					  	
+					  	
 					</div>
 				</div>
 			</div>
@@ -308,10 +340,10 @@ Public License instead of this License.
 				</form>
 		 	</div>		
 
-			<p>
+			<div>
 		  		<span id="dialog-renderMessage" style="margin:0 7px 50px 0"></span>
 		  		<div id="renderProgressBar"></div>
-			</p>
+			</div>
 		</div> 
 		
 		<div id="dialog-drawingStatus" title="Drawing Status">
@@ -323,16 +355,16 @@ Public License instead of this License.
 			<div id="moveSpeedSlider"></div>
 			<br/>	
 		
-			<p>
+			<div>
 		  		<span id="dialog-drawingMessage" style="margin:0 7px 50px 0"></span>
 		  		<div id="drawingProgressBar"></div>
-			</p>
+			</div>
 		</div> 		
 		
 		<div id="dialog-status" title="Sketchy Status"> 
-			<p>
+			<div>
 		  		<span id="dialog-statusMessage" style="margin:0 7px 50px 0"></span>
-		  	</p>
+		  	</div>
 		</div>
 		
 		<div id="dialog-message" title="Message">
@@ -342,9 +374,9 @@ Public License instead of this License.
 		</div> 
 		
 		<div id="dialog-error" title="Error">
-			<p>
+			<div>
 		  		<span id="dialog-errorText" style="margin:0 7px 50px 0"></span>
-			</p>
+			</div>
 		</div>  
 		<div id="footercopyright">©2015 QuickDraw, Matt Havlovick, All rights reserved.</div>
 	</body>

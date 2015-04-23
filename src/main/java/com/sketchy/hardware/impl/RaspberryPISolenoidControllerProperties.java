@@ -36,160 +36,201 @@ Public License instead of this License.
 
 package com.sketchy.hardware.impl;
 
-import com.pi4j.wiringpi.Gpio;
-import com.pi4j.wiringpi.SoftPwm;
-import com.sketchy.hardware.Direction;
 import com.sketchy.hardware.HardwareController;
+import com.sketchy.hardware.HardwareControllerProperties;
+import com.sketchy.metadata.MetaData;
+import com.sketchy.metadata.MetaDataGroup;
+import com.sketchy.metadata.MetaDataProperty;
+import com.sketchy.metadata.MetaDataProperty.AttributeType;
 
-public class RaspberryPISolenoidControllerProperties extends HardwareController {
-	
-	private static int PWM_RANGE=100;
+public class RaspberryPISolenoidControllerProperties extends HardwareControllerProperties {
 
-	private long lastMotorTimeNanos=0;
-	
-	private boolean isPenDown=true;
-	
-	private RaspberryPISolenoidController properties = null;
-	
-	public RaspberryPISolenoidControllerProperties(RaspberryPISolenoidController properties) {
-		super(properties);
-		this.properties=properties;
-		setupPins();
-	}
-	
+	private static final long serialVersionUID = 7043702864264487942L;
+
 	@Override
-	public RaspberryPISolenoidController getProperties(){
-		return properties;
+	public Class<? extends HardwareController> getImplementationClass() {
+		return RaspberryPISolenoidController.class; 
 	}
 	
-	public synchronized void penUp(){
-		if (isPenDown){
-			SoftPwm.softPwmWrite(properties.getPenPinNumber(), properties.getPenUpPowerLevel());
-			Gpio.delayMicroseconds(properties.getPenUpPeriodInMicroseconds());
-			SoftPwm.softPwmWrite(properties.getPenPinNumber(), properties.getPenUpHoldPowerLevel());
-			isPenDown=false;
-		}
-	}
-	
-	public synchronized void penDown(){
-		if (!isPenDown){
-			SoftPwm.softPwmWrite(properties.getPenPinNumber(), 0); // off
-			Gpio.delayMicroseconds(properties.getPenDownPeriodInMicroseconds());
-			isPenDown=true;
-		}
-	}
-	
-	public synchronized void stepMotors(Direction leftMotorDirection, Direction rightMotorDirection, long delayInMicroSeconds){
-		// take the Max of any of the delays: Minimum Left, Minimum Right, or delayInMicroSeconds
-		if ((leftMotorDirection==Direction.NONE) && (rightMotorDirection==Direction.NONE)) return;
-		long minDelayInMicroseconds = 0;
-		if (leftMotorDirection!=Direction.NONE){ // only need to get minimum if moving
-			minDelayInMicroseconds = properties.getLeftMotorMinStepPeriodInMicroseconds();
-		}
-		if (rightMotorDirection!=Direction.NONE){ // only need to get minimum if moving
-			minDelayInMicroseconds = Math.max(minDelayInMicroseconds, properties.getRightMotorMinStepPeriodInMicroseconds());
-		}
-		delayInMicroSeconds = Math.max(delayInMicroSeconds,minDelayInMicroseconds);
+	@Override	
+	public MetaData getMetaData() {
 		
-		long delay = delayInMicroSeconds-((System.nanoTime()-lastMotorTimeNanos)/1000);
-		if (delay>0){
-			Gpio.delayMicroseconds(delay);
-		}
-		if (leftMotorDirection!=Direction.NONE){
-			if (properties.isLeftMotorInvertDirection() == (leftMotorDirection==Direction.FORWARD)){
-				Gpio.digitalWrite(properties.getLeftMotorDirectionPinNumber(), true);
-			} else {
-				Gpio.digitalWrite(properties.getLeftMotorDirectionPinNumber(), false);
-			}
-			Gpio.digitalWrite(properties.getLeftMotorStepPinNumber(), true);
-			Gpio.digitalWrite(properties.getLeftMotorStepPinNumber(), false);
-		}
-
-		if (rightMotorDirection!=Direction.NONE){
-			if (properties.isRightMotorInvertDirection() == (rightMotorDirection==Direction.FORWARD)){
-				Gpio.digitalWrite(properties.getRightMotorDirectionPinNumber(), true);
-			} else {
-				Gpio.digitalWrite(properties.getRightMotorDirectionPinNumber(), false);
-			}
-			Gpio.digitalWrite(properties.getRightMotorStepPinNumber(), true);
-			Gpio.digitalWrite(properties.getRightMotorStepPinNumber(), false);
-		}
+		MetaData metaData = new MetaData();
 		
-		lastMotorTimeNanos=System.nanoTime();
-	}
-	
-	@Override
-	public synchronized void enableMotors() {
-		Gpio.digitalWrite(properties.getLeftMotorEnablePinNumber(), false);
-		Gpio.digitalWrite(properties.getRightMotorEnablePinNumber(), false);
-	}
+		MetaDataGroup leftMotorGroup = new MetaDataGroup("Left Motor");
+		leftMotorGroup.add(new MetaDataProperty("leftMotorStepPinNumber","Step Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		leftMotorGroup.add(new MetaDataProperty("leftMotorDirectionPinNumber","Direction Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		leftMotorGroup.add(new MetaDataProperty("leftMotorEnablePinNumber","Enable Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		leftMotorGroup.add(new MetaDataProperty("leftMotorInvertDirection","Invert Direction",AttributeType.Boolean));
+		leftMotorGroup.add(new MetaDataProperty("leftMotorMinStepPeriodInMicroseconds","Min Step Period(microseconds)",AttributeType.Number));
+		leftMotorGroup.add(new MetaDataProperty("leftMotorForward","Motor Forward (1000 steps)",AttributeType.Button));		
+		leftMotorGroup.add(new MetaDataProperty("leftMotorBackward","Motor Backward (1000 steps)",AttributeType.Button));			
+		metaData.add(leftMotorGroup);
 
-	@Override
-	public synchronized void disableMotors() {
-		Gpio.digitalWrite(properties.getLeftMotorEnablePinNumber(), true);
-		Gpio.digitalWrite(properties.getRightMotorEnablePinNumber(), true);		
-	}
+		MetaDataGroup rightMotorGroup = new MetaDataGroup("Right Motor");
+		rightMotorGroup.add(new MetaDataProperty("rightMotorStepPinNumber","Step Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		rightMotorGroup.add(new MetaDataProperty("rightMotorDirectionPinNumber","Direction Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		rightMotorGroup.add(new MetaDataProperty("rightMotorEnablePinNumber","Enable Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		rightMotorGroup.add(new MetaDataProperty("rightMotorInvertDirection","Invert Direction",AttributeType.Boolean));
+		rightMotorGroup.add(new MetaDataProperty("rightMotorMinStepPeriodInMicroseconds","Min Step Period(microseconds)",AttributeType.Number));
+		rightMotorGroup.add(new MetaDataProperty("rightMotorForward","Motor Forward (1000 steps)",AttributeType.Button));		
+		rightMotorGroup.add(new MetaDataProperty("rightMotorBackward","Motor Backward (1000 steps)",AttributeType.Button));			
+		metaData.add(rightMotorGroup);
 
-	@Override
-	public synchronized void shutDown() {
-		// ensure Pen is down. If using a solenoid, we don't want it to burn up
-		penDown();
-		tearDownPins();
-	}
-
-	private synchronized void setupPins(){
-		int retryCount=0;
-		while(true){
-			try{
-				int ret = Gpio.wiringPiSetupGpio();
-				if (ret==0) break;
-				System.out.println("Error Initializing GPIO!");
-			} catch (Throwable t){
-				System.out.println("Error Initializing GPIO! " + toString());
-			}
-			if (retryCount>3){
-				throw new RuntimeException("Count not Initialize GPIO!");
-			}
-			System.out.println("Trying again!");
-			retryCount++;
-			try{Thread.sleep(500);} catch (Exception e){}
-		}
+		MetaDataGroup penGroup = new MetaDataGroup("Pen");
+		penGroup.add(new MetaDataProperty("penPinNumber","Pin Number",AttributeType.List, RaspberryPiPins.pins));
+		penGroup.add(new MetaDataProperty("penDownPeriodInMicroseconds","Down Stable Period(microseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penUpPeriodInMicroseconds","Up Stable Period (microseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penUpPowerLevel","Power Level(0-100)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penUpHoldPowerLevel","Hold Power Level(0-100)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penUp","Pen Up",AttributeType.Button));	
+		penGroup.add(new MetaDataProperty("penDown","Pen Down",AttributeType.Button));	
+		penGroup.add(new MetaDataProperty("penCycle","Cycle 5 Times",AttributeType.Button));		
+		metaData.add(penGroup);
 		
-		int ret = SoftPwm.softPwmCreate(properties.getPenPinNumber(), 0, PWM_RANGE);
-		if (ret!=0){
-			throw new RuntimeException("Error Creating PWM Pin!");
-		}
-			
-		Gpio.pinMode(properties.getLeftMotorEnablePinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getLeftMotorEnablePinNumber(), false);
-
-		Gpio.pinMode(properties.getLeftMotorDirectionPinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getLeftMotorDirectionPinNumber(), false);
-			
-		Gpio.pinMode(properties.getLeftMotorStepPinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getLeftMotorStepPinNumber(), false);
-			
-		Gpio.pinMode(properties.getRightMotorEnablePinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getRightMotorEnablePinNumber(), false);
-
-		Gpio.pinMode(properties.getRightMotorDirectionPinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getRightMotorDirectionPinNumber(), false);
-	
-		Gpio.pinMode(properties.getRightMotorStepPinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getRightMotorStepPinNumber(), false);
+		return metaData;
 	}
 	
-	private synchronized void tearDownPins(){
-		SoftPwm.softPwmWrite(properties.getPenPinNumber(), 0);
-		// Set pinMode to Output to reset/PWM Pin so it doesn't fail if setup again
-		Gpio.pinMode(properties.getPenPinNumber(), Gpio.OUTPUT);
-		Gpio.digitalWrite(properties.getLeftMotorEnablePinNumber(), false); // turn off old pin
-		Gpio.digitalWrite(properties.getLeftMotorDirectionPinNumber(), false); // turn off old pin			
-		Gpio.digitalWrite(properties.getLeftMotorStepPinNumber(), false); // turn off old pin	
-		Gpio.digitalWrite(properties.getRightMotorEnablePinNumber(), false); // turn off old pin
-		Gpio.digitalWrite(properties.getRightMotorDirectionPinNumber(), false); // turn off old pin			
-		Gpio.digitalWrite(properties.getRightMotorStepPinNumber(), false); // turn off old pin	
+		
+	private int leftMotorStepPinNumber=24;
+	private int leftMotorDirectionPinNumber=25;
+	private int leftMotorEnablePinNumber=23;
+	private boolean leftMotorInvertDirection=false;
+	private long leftMotorMinStepPeriodInMicroseconds=150;
+	
+	private int rightMotorStepPinNumber=27;
+	private int rightMotorDirectionPinNumber=22;
+	private int rightMotorEnablePinNumber=17;
+	private boolean rightMotorInvertDirection=true;
+	private long rightMotorMinStepPeriodInMicroseconds=150;
+	
+	private int penPinNumber=18;
+	private long penDownPeriodInMicroseconds=100000;
+	private long penUpPeriodInMicroseconds=50000;
+	private int penUpPowerLevel=30;
+	private int penUpHoldPowerLevel=20;
+
+	public int getLeftMotorStepPinNumber() {
+		return leftMotorStepPinNumber;
 	}
-	
-	
+
+	public void setLeftMotorStepPinNumber(int leftMotorStepPinNumber) {
+		this.leftMotorStepPinNumber = leftMotorStepPinNumber;
+	}
+
+	public int getLeftMotorDirectionPinNumber() {
+		return leftMotorDirectionPinNumber;
+	}
+
+	public void setLeftMotorDirectionPinNumber(int leftMotorDirectionPinNumber) {
+		this.leftMotorDirectionPinNumber = leftMotorDirectionPinNumber;
+	}
+
+	public int getLeftMotorEnablePinNumber() {
+		return leftMotorEnablePinNumber;
+	}
+
+	public void setLeftMotorEnablePinNumber(int leftMotorEnablePinNumber) {
+		this.leftMotorEnablePinNumber = leftMotorEnablePinNumber;
+	}
+
+	public boolean isLeftMotorInvertDirection() {
+		return leftMotorInvertDirection;
+	}
+
+	public void setLeftMotorInvertDirection(boolean leftMotorInvertDirection) {
+		this.leftMotorInvertDirection = leftMotorInvertDirection;
+	}
+
+	public long getLeftMotorMinStepPeriodInMicroseconds() {
+		return leftMotorMinStepPeriodInMicroseconds;
+	}
+
+	public void setLeftMotorMinStepPeriodInMicroseconds(
+			long leftMotorMinStepPeriodInMicroseconds) {
+		this.leftMotorMinStepPeriodInMicroseconds = leftMotorMinStepPeriodInMicroseconds;
+	}
+
+	public int getRightMotorStepPinNumber() {
+		return rightMotorStepPinNumber;
+	}
+
+	public void setRightMotorStepPinNumber(int rightMotorStepPinNumber) {
+		this.rightMotorStepPinNumber = rightMotorStepPinNumber;
+	}
+
+	public int getRightMotorDirectionPinNumber() {
+		return rightMotorDirectionPinNumber;
+	}
+
+	public void setRightMotorDirectionPinNumber(int rightMotorDirectionPinNumber) {
+		this.rightMotorDirectionPinNumber = rightMotorDirectionPinNumber;
+	}
+
+	public int getRightMotorEnablePinNumber() {
+		return rightMotorEnablePinNumber;
+	}
+
+	public void setRightMotorEnablePinNumber(int rightMotorEnablePinNumber) {
+		this.rightMotorEnablePinNumber = rightMotorEnablePinNumber;
+	}
+
+	public boolean isRightMotorInvertDirection() {
+		return rightMotorInvertDirection;
+	}
+
+	public void setRightMotorInvertDirection(boolean rightMotorInvertDirection) {
+		this.rightMotorInvertDirection = rightMotorInvertDirection;
+	}
+
+	public long getRightMotorMinStepPeriodInMicroseconds() {
+		return rightMotorMinStepPeriodInMicroseconds;
+	}
+
+	public void setRightMotorMinStepPeriodInMicroseconds(
+			long rightMotorMinStepPeriodInMicroseconds) {
+		this.rightMotorMinStepPeriodInMicroseconds = rightMotorMinStepPeriodInMicroseconds;
+	}
+
+	public int getPenPinNumber() {
+		return penPinNumber;
+	}
+
+	public void setPenPinNumber(int penPinNumber) {
+		this.penPinNumber = penPinNumber;
+	}
+
+	public long getPenDownPeriodInMicroseconds() {
+		return penDownPeriodInMicroseconds;
+	}
+
+	public void setPenDownPeriodInMicroseconds(long penDownPeriodInMicroseconds) {
+		this.penDownPeriodInMicroseconds = penDownPeriodInMicroseconds;
+	}
+
+	public long getPenUpPeriodInMicroseconds() {
+		return penUpPeriodInMicroseconds;
+	}
+
+	public void setPenUpPeriodInMicroseconds(long penUpPeriodInMicroseconds) {
+		this.penUpPeriodInMicroseconds = penUpPeriodInMicroseconds;
+	}
+
+	public int getPenUpPowerLevel() {
+		return penUpPowerLevel;
+	}
+
+	public void setPenUpPowerLevel(int penUpPowerLevel) {
+		this.penUpPowerLevel = penUpPowerLevel;
+	}
+
+	public int getPenUpHoldPowerLevel() {
+		return penUpHoldPowerLevel;
+	}
+
+	public void setPenUpHoldPowerLevel(int penUpHoldPowerLevel) {
+		this.penUpHoldPowerLevel = penUpHoldPowerLevel;
+	}
+
+
 }

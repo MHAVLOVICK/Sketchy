@@ -60,7 +60,7 @@ public class GetRenderedImageFiles extends ServletAction {
 	public JSONServletResult execute(HttpServletRequest request) throws Exception {
 		JSONServletResult jsonServletResult = new JSONServletResult(Status.SUCCESS);
 		try{
-	    	File[] files = HttpServer.FILE_UPLOAD_DIRECTORY.listFiles(new FilenameFilter() {
+	    	File[] files = HttpServer.IMAGE_UPLOAD_DIRECTORY.listFiles(new FilenameFilter() {
 				@Override
 				public boolean accept(File arg0, String filename) {
 					return (StringUtils.endsWithIgnoreCase(filename, "rendered.dat"));
