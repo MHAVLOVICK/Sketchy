@@ -92,13 +92,14 @@ Public License instead of this License.
 	
 	<body>
 		<div>
-			<div id="tabs">
+			<div id="main-tabs">
 				<ul>
-						<li><a href="#tabs-1">Image</a></li>
-						<li><a href="#tabs-2" id="tabs-2-tab">Settings</a></li>
+					<li><a href="#image-page" id="image-tab">Image</a></li>
+					<li><a href="#settings-page" id="settings-tab">Settings</a></li>
+					<li><a href="#advanced-page" id="advanced-tab">Advanced</a></li>
 				</ul>
 				
-				<div id="tabs-1">
+				<div id="image-page">
 			  		<table>
 				  		<tr>
 					  		<td valign="top">
@@ -126,17 +127,16 @@ Public License instead of this License.
 					</table>
 			  	</div>
 			  	
-			  	<div id="tabs-2">
+			  	<div id="settings-page">
 				  	<div id="settings-tabs">
 						<ul>
-							<li><a href="#settings-tab-drawing-page" id="settings-tab-drawing">Drawing</a></li>
-							<li><a href="#settings-tab-pathing-page" id="settings-tab-pathing">Pathing</a></li>
-							<li><a href="#settings-tab-plotter-page" id="settings-tab-plotter">Plotter</a></li>
-							<li><a href="#settings-tab-hardware-page" id="settings-tab-hardware">Hardware</a></li>
-							<li><a href="#settings-tab-advanced-page" id="settings-tab-advanced">Advanced</a></li>
+							<li><a href="#settings-drawing-page" id="settings-drawing-tab">Drawing</a></li>
+							<li><a href="#settings-pathing-page" id="settings-pathing-tab">Pathing</a></li>
+							<li><a href="#settings-plotter-page" id="settings-plotter-tab">Plotter</a></li>
+							<li><a href="#settings-hardware-page" id="settings-hardware-tab">Hardware</a></li>
 						</ul>
 						
-						<div id="settings-tab-drawing-page">
+						<div id="settings-drawing-page">
 					  		<form name="drawingSettingsForm" id="drawingSettingsForm">
 						  		<div id="drawingPropertiesDiv"></div>
 						  		<table>
@@ -149,7 +149,7 @@ Public License instead of this License.
 							</form>
 					  	</div>
 						
-						<div id="settings-tab-pathing-page">
+						<div id="settings-pathing-page">
 					  		<form name="pathingSettingsForm" id="pathingSettingsForm">
 						  		<table>
 									<tr valign="top">	
@@ -181,7 +181,7 @@ Public License instead of this License.
 							</form>
 					  	</div>
 					  							
-						<div id="settings-tab-plotter-page">
+						<div id="settings-plotter-page">
 					  		<form name="plotterSettingsForm" id="plotterSettingsForm">
 						  		<table>
 									<tr valign="top">	
@@ -214,7 +214,7 @@ Public License instead of this License.
 					  	</div>
 						
 						
-						<div id="settings-tab-hardware-page">
+						<div id="settings-hardware-page">
 					  		<form name="hardwareSettingsForm" id="hardwareSettingsForm">
 						  		<table>
 									<tr valign="top">	
@@ -245,38 +245,71 @@ Public License instead of this License.
 								</table>
 							</form>
 					  	</div>
+					</div>
+				</div>
 					  	
-					  	<div id="settings-tab-advanced-page">
-					  		<form name="upgradeForm" id="upgradeForm">
-						  		<table>
+			  	<div id="advanced-page">
+			  		<div id="advanced-tabs">
+						<ul>
+							<li><a href="#advanced-upgrade-page" id="advanced-upgrade-tab">Upgrade Software</a></li>
+							<li><a href="#advanced-network-page" id="advanced-network-tab">Network Setup</a></li>
+						</ul>
+									
+						<div id="advanced-upgrade-page">
+					  		<table>
+								<tr valign="top">	
+					  				<td colspan="2">
+							 			<fieldset>
+							    			<legend>Select Upgrade File</legend>
+				   							<form id="uploadUpgradeform">
+												<input id="uploadUpgradeFile" type="file" name="uploadUpgradeFile"/>
+												<br/>
+												<br/>
+												<div id="upgradeMessage"></div>
+											</form>
+							   			</fieldset>
+							   		</td>
+							   	</tr>		
+								<tr>
+									<td><br/>
+										<input type="button" style="display:none" id="upgradeSoftwareButton" value="Upgrade Software"/>
+										<input type="button" class="restart" value="Reboot Raspberry Pi"/>
+									</td>
+								</tr>							   				  		
+					  		</table>
+					  	</div>
+					  	
+					  	<div id="advanced-network-page">
+   							<form id="networkSettingsForm">
+								<table>
 									<tr valign="top">	
 						  				<td colspan="2">
 								 			<fieldset>
-								    			<legend>Select Upgrade File</legend>
-						   							<form id="uploadUpgradeform">
-														<input id="uploadUpgradeFile" type="file" name="uploadUpgradeFile"/>
-														<br/>
-														<br/>
-														<div id="upgradeMessage"></div>
-													</form>
+								    			<legend>Wireless Network</legend>
+												<table>
+													<tr>
+														<td>Network SSID</td>
+														<td><input type="text" size="30" name="networkSSID" id="networkSSID"></td>
+													</tr>
+													<tr>
+														<td>Password</td>
+														<td>
+															<input type="text" size="30" name="networkPassword" id="networkPassword">
+														</td>
+													</tr>
+												</table>
 								   			</fieldset>
 								   		</td>
-								   	</tr>					  		
-						  		</table>
-						  		
-						  		<div id="upgradeSoftwareDiv"></div>
-						  		<table>
+								   	</tr>		
 									<tr>
-										<td>
-											<input type="button" style="display:none" id="upgradeSoftwareButton" value="Upgrade Software"/>'
-											<input type="button" id="restart" value="Reboot Raspberry Pi"/>'
+										<td><br/>
+											<input type="button" id="saveNetworkSettingsButton" value="Save Network Settings"/>
+											<input type="button" class="restart" value="Reboot Raspberry Pi"/>
 										</td>
-									</tr>
-								</table>
+									</tr>							   				  		
+						  		</table>
 							</form>
-					  	</div>
-					  	
-					  	
+						</div>
 					</div>
 				</div>
 			</div>

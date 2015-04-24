@@ -56,6 +56,9 @@ public class DrawImage extends ServletAction {
 	public JSONServletResult execute(HttpServletRequest request) throws Exception {
 		JSONServletResult jsonServletResult = new JSONServletResult(Status.SUCCESS);
 		try{
+			if ((HttpServer.drawingProccessorThread!=null) && (HttpServer.drawingProccessorThread.isAlive())){
+				throw new Exception("Can't start drawing. Drawing Thread already running!");
+			}
 			SketchyContext.initializeHardwareController();
 			SketchyContext.initializePlotterController();
 			SketchyContext.initializePathingProcessor();

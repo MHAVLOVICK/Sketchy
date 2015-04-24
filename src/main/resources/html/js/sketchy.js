@@ -39,28 +39,28 @@ $( document ).ready(function() {
 	
 	// Setup Tabs
 
-	$( "#tabs" ).tabs();
+	$( "#main-tabs" ).tabs();
 	$( "#settings-tabs" ).tabs();
+	$( "#advanced-tabs" ).tabs();
 	
 	loadFileList();
 			
 	updateDrawingStatus();
 
-	$("#tabs-2-tab").on("click", function(e){
+	$("#settings-tab").on("click", function(e){
 		loadDrawingSettings();
 	});
 	
-	$("#settings-tab-drawing").on("click", function(e){
+	$("#settings-drawing-tab").on("click", function(e){
 		loadDrawingSettings();	
 	});
-
 	
 	$("#saveDrawingSettingsButton").on("click", function(e){
 		saveDrawingSettings();
 	});
 	
 	
-	$("#settings-tab-pathing").on("click", function(e){
+	$("#settings-pathing-tab").on("click", function(e){
 		$("#pathingProcessorClass").val("");
 		loadPathingSettings();	
 	});
@@ -73,7 +73,7 @@ $( document ).ready(function() {
 		savePathingSettings();
 	});
 	
-	$("#settings-tab-plotter").on("click", function(e){
+	$("#settings-plotter-tab").on("click", function(e){
 		$("#plotterControllerClass").val("");
 		loadPlotterSettings();	
 	});
@@ -86,7 +86,7 @@ $( document ).ready(function() {
 		savePlotterSettings();
 	});
 	
-	$("#settings-tab-hardware").on("click", function(e){
+	$("#settings-hardware-tab").on("click", function(e){
 		$("#hardwareControllerClass").val("");
 		loadHardwareSettings();	
 	});
@@ -97,6 +97,14 @@ $( document ).ready(function() {
 
 	$("#saveHardwareSettingsButton").on("click", function(e){
 		saveHardwareSettings();
+	});
+	
+	$("#advanced-network-tab").on("click", function(e){
+		loadNetworkSettings();	
+	});
+	
+	$("#saveNetworkSettingsButton").on("click", function(e){
+		saveNetworkSettings();
 	});
 	
 
@@ -184,7 +192,7 @@ $( document ).ready(function() {
 		shutDown();
 	});
 	
-	$("#restart").on("click", function(e){
+	$(".restart").on("click", function(e){
 		restart();
 	});
 	
@@ -792,6 +800,30 @@ function populateDrawingSettings(data){
 	}
 }
 
+
+function loadNetworkSettings() {
+	$("#networkSSID").val("");
+	$("#networkPassword").val("");
+	jsonGetRequest("/servlet/ManageNetworkSettings","", function(data){
+		$("#networkSSID").val(data.ssid);
+	});
+}
+
+function saveNetworkSettings() {
+	var networkSettingsForm = form2js('networkSettingsForm', '.', true,null,false);
+	jsonPostRequest("/servlet/ManageNetworkSettings",JSON.stringify(networkSettingsForm), 
+		function(data){
+			showMessage("Network Settings Saved!  Reboot Required.");
+    		loadNetworkSettings();
+	    },
+	    function(data){
+	    	showError(data.message);	
+    		loadNetworkSettings();
+	    }
+	);
+}
+
+
 function upgradeSoftware(){
 	jsonPostRequest("/servlet/UpgradeSoftware","", function(data){
    		$("#upgradeMessage").html("The Software has been upgraded, but a reboot is required!");
@@ -1034,6 +1066,10 @@ function uploadUpgradeFile(){
 		if (ext!=file.name) {
 			formdata = new FormData();
             formdata.append("file", file);
+            $("#dialog-statusMessage").html("Please Wait. Uploading File: " + file.name);
+        	if (!($("#dialog-status").dialog( "isOpen" )===true)) {
+        		$( "#dialog-status" ).dialog( "open" );
+        	}            
            	jQuery.ajax({
                	url: "/upgradeUpload/upload",
               	type: "POST",
@@ -1050,9 +1086,15 @@ function uploadUpgradeFile(){
                		} else {
            				defaultErrorCallback("Unexpected Response." + data.message);
                		}
+                	if (($("#dialog-status").dialog( "isOpen" )===true)) {
+                		$( "#dialog-status" ).dialog( "close" );
+                	}                   		
                	},
                	error: function (XMLHttpRequest, textStatus, errorThrown){
         			defaultErrorCallback(textStatus + "(" + errorThrown + ")");
+                	if (($("#dialog-status").dialog( "isOpen" )===true)) {
+                		$( "#dialog-status" ).dialog( "close" );
+                	}          			
                	}
            	});
         } else {

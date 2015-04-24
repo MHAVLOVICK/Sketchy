@@ -100,27 +100,27 @@ public class HttpServer {
         servletContext.addServlet(imageUploadHolder, "/imageUpload/*");
         servletContext.addServlet(upgradeUploadHolder, "/upgradeUpload/*");
         
-        // if we are developing, we want to pull the files from the filesystem, not the .jar file
+        // if we are developing, we shouldn't have the Sketchy.jar file in our classpath.
+        // in this case, pull from the filesystem, not the .jar
+        
         ContextHandler resourceContext = new ContextHandler();
-        if (SOURCE_HTML_FILES_DIRECTORY.exists()){
+        
+        URL url = server.getClass().getClassLoader().getResource("html");
+        if (url!=null){
+	        ResourceHandler resourceHandler = new ResourceHandler();
+	        resourceHandler.setDirectoriesListed(false);
+	        resourceContext.setWelcomeFiles(new String[] { "index.html" });
+	        resourceContext.setContextPath("/");
+	        String resourceBase = url.toExternalForm();
+	        resourceContext.setResourceBase(resourceBase);
+	        resourceContext.setHandler(resourceHandler);
+        } else { 
             ResourceHandler resourceHandler = new ResourceHandler();
             resourceHandler.setDirectoriesListed(false);
             resourceContext.setWelcomeFiles(new String[] { "index.html" });
             resourceContext.setContextPath("/");
             resourceContext.setResourceBase(SOURCE_HTML_FILES_DIRECTORY.getCanonicalPath());
             resourceContext.setHandler(resourceHandler);
-        } else {
-	        ResourceHandler resourceHandler = new ResourceHandler();
-	        resourceHandler.setDirectoriesListed(false);
-	        resourceContext.setWelcomeFiles(new String[] { "index.html" });
-	        resourceContext.setContextPath("/");
-	        URL url = server.getClass().getClassLoader().getResource("html");
-	        if (url==null){
-	        	throw new Exception("Can not find html resources!");
-	        }
-	        String resourceBase = url.toExternalForm();
-	        resourceContext.setResourceBase(resourceBase);
-	        resourceContext.setHandler(resourceHandler);
         }
         
         ResourceHandler uploadResourceHandler = new ResourceHandler();
