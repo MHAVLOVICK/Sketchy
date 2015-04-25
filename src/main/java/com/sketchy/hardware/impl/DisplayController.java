@@ -51,7 +51,6 @@ import com.sketchy.hardware.Direction;
 import com.sketchy.hardware.HardwareController;
 import com.sketchy.utils.DelayUtils;
 
-
 public class DisplayController extends HardwareController {
 	
 	private DisplayControllerProperties properties = null;
@@ -67,11 +66,6 @@ public class DisplayController extends HardwareController {
 	private int leftMotorSteps=0;
 	private int rightMotorSteps=0;
 	
-	double leftMotorStepsPerMM;
-	double rightMotorStepsPerMM;
-	
-	double mmPerStep;
-	
 	int windowWidth;
 	int windowHeight;
 	
@@ -85,8 +79,6 @@ public class DisplayController extends HardwareController {
 	double canvasLeftPos;
 	
 	double yPosOffset;
-	
-	double penWidth=.3;
 	
 	private boolean isPenDown=true;
 
@@ -116,17 +108,11 @@ public class DisplayController extends HardwareController {
 	public synchronized void stepMotors(Direction leftMotorDirection, Direction rightMotorDirection, long delayInMicroSeconds){
 		// make sure display is visible... in case it was hidden
 		if (!jFrame.isVisible()){
-			
 			jFrame.setVisible(true);
 		}
 		if ((leftMotorDirection==Direction.NONE) && (rightMotorDirection==Direction.NONE)) return;
 		long minDelayInMicroseconds = 0;
-		if (leftMotorDirection!=Direction.NONE){ // only need to get minimum if moving
-			minDelayInMicroseconds = properties.getLeftMotorMinStepPeriodInMicroseconds();
-		}
-		if (rightMotorDirection!=Direction.NONE){ // only need to get minimum if moving
-			minDelayInMicroseconds = Math.max(minDelayInMicroseconds, properties.getRightMotorMinStepPeriodInMicroseconds());
-		}
+
 		delayInMicroSeconds = Math.max(delayInMicroSeconds,minDelayInMicroseconds);
 		
 		long delay = delayInMicroSeconds-((System.nanoTime()-lastMotorTimeNanos)/1000);
@@ -136,16 +122,17 @@ public class DisplayController extends HardwareController {
 
 		int stepLeftMotor=0;
 		if (leftMotorDirection!=Direction.NONE){
-			if (properties.isLeftMotorInvertDirection() == (leftMotorDirection==Direction.FORWARD)){
+			if (leftMotorDirection==Direction.FORWARD) {
 				stepLeftMotor=1;
 			} else {
 				stepLeftMotor=-1;
 			}
 		}
 
+
 		int stepRightMotor=0;
 		if (rightMotorDirection!=Direction.NONE){
-			if (properties.isRightMotorInvertDirection() == (rightMotorDirection==Direction.FORWARD)){
+			if (rightMotorDirection==Direction.FORWARD){
 				stepRightMotor=1;
 			} else {
 				stepRightMotor=-1;
@@ -155,8 +142,8 @@ public class DisplayController extends HardwareController {
 		leftMotorSteps+=stepLeftMotor;
 		rightMotorSteps+=stepRightMotor;
 		
-		double leftMotorLength=leftMotorSteps/leftMotorStepsPerMM;
-		double rightMotorLength=rightMotorSteps/rightMotorStepsPerMM;
+		double leftMotorLength=leftMotorSteps;
+		double rightMotorLength=rightMotorSteps;
 
 		if (isPenDown){
 			// this is the point on the frame
@@ -170,17 +157,11 @@ public class DisplayController extends HardwareController {
 			int pixelX=(int) (point.x/frameToImageWidth);
 			int pixelY=(int) (point.y/frameToImageHeight);
 
-			int penPixelWidth = (int) Math.ceil(penWidth/frameToImageWidth); // make sure the pen goes to the next highest integer for the display
-			int penPixelHeight = (int) Math.ceil(penWidth/frameToImageHeight);
-			
 			if ((pixelX>=0) && (pixelX<image.getWidth()) &&
 				(pixelY>=0) && (pixelY<image.getHeight())){
-				// how big to make the dot?
-
 				Graphics g = image.getGraphics();
 				g.setColor(Color.black);
-				g.drawOval(pixelX-(int)(penPixelWidth/2), pixelY-(int)(penPixelHeight/2), (int) penPixelWidth, (int) penPixelHeight);
-				g.fillOval(pixelX-(int)(penPixelWidth/2), pixelY-(int)(penPixelHeight/2), (int) penPixelWidth, (int) penPixelHeight);
+				g.fillRect(pixelX, pixelY, (int) Math.ceil(1/frameToImageWidth), (int) Math.ceil(1/frameToImageHeight));
 				myPanel.repaint();
 			}
 		}
@@ -188,17 +169,11 @@ public class DisplayController extends HardwareController {
 	}
 
 	@Override
-	public synchronized void enableMotors() {
-		System.out.println("Enabling Left Motor");
-		System.out.println("Enabling Right Motor");
-	}
+	public synchronized void enableMotors() {}
 
 	
 	@Override
-	public synchronized void disableMotors() {
-		System.out.println("Disabling Left Motor");
-		System.out.println("Disabling Right Motor");	
-	}
+	public synchronized void disableMotors() {}
 
 	@Override
 	public synchronized void shutDown() {
@@ -215,10 +190,7 @@ public class DisplayController extends HardwareController {
 	
 	
 	private void setupDisplay() {
-		
-		leftMotorStepsPerMM = properties.getLeftMotorStepsPerMM();
-		rightMotorStepsPerMM = properties.getRightMotorStepsPerMM();
-		
+
 		windowWidth = properties.getWindowWidth();
 		windowHeight = properties.getWindowHeight();
 		
@@ -236,17 +208,12 @@ public class DisplayController extends HardwareController {
 		jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		jFrame.addComponentListener(new FrameListener());
 		
-		//jFrame.setVisible(true);
-		// by using pack, I can get the insets to determine how large I should make the image
-		//jFrame.pack();
-		
-		//  Represent the image as 4 times the window size  
-		//  This will allow a more realistic image if using a larger pen width
+
 		int panelWidth=windowWidth-(jFrame.getInsets().left + jFrame.getInsets().right);
 		int panelHeight=windowHeight-(jFrame.getInsets().top + jFrame.getInsets().bottom);
 		
-		int imageWidth = (int) Math.ceil(panelWidth/penWidth);//*4; 
-		int imageHeight = (int) Math.ceil(panelHeight/penWidth);//*4;
+		int imageWidth = panelWidth; 
+		int imageHeight = panelHeight;
 		
 		image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
 		myPanel = new MyPanel(image);
@@ -260,8 +227,8 @@ public class DisplayController extends HardwareController {
 		double leftMotorLength=Math.sqrt(Math.pow(currentXPos, 2) + Math.pow(currentYPos, 2));
 		double rightMotorLength=Math.sqrt(Math.pow(frameWidth-currentXPos, 2) + Math.pow(currentYPos, 2));
 
-		leftMotorSteps = (int) (leftMotorLength * leftMotorStepsPerMM);
-		rightMotorSteps = (int) (rightMotorLength * rightMotorStepsPerMM);
+		leftMotorSteps = (int) leftMotorLength;
+		rightMotorSteps = (int) rightMotorLength;
 		
 		penDown();
 	}

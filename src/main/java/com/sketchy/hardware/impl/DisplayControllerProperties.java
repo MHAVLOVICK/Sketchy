@@ -70,41 +70,19 @@ public class DisplayControllerProperties extends HardwareControllerProperties {
 		canvasGroup.add(new MetaDataProperty("yPosOffset","Home Y Position Offset",AttributeType.Decimal,true));
 		metaData.add(canvasGroup);
 
-		
-		MetaDataGroup leftMotorGroup = new MetaDataGroup("Left Motor");
-		leftMotorGroup.add(new MetaDataProperty("leftMotorStepsPerMM","Steps Per Millimeter",AttributeType.Decimal));
-		leftMotorGroup.add(new MetaDataProperty("leftMotorInvertDirection","Invert Direction",AttributeType.Boolean));
-		leftMotorGroup.add(new MetaDataProperty("leftMotorMinStepPeriodInMicroseconds","Min Step Period(microseconds)",AttributeType.Number));
-		metaData.add(leftMotorGroup);
-
-		MetaDataGroup rightMotorGroup = new MetaDataGroup("Right Motor");
-		rightMotorGroup.add(new MetaDataProperty("rightMotorStepsPerMM","Steps Per Millimeter",AttributeType.Decimal));
-		rightMotorGroup.add(new MetaDataProperty("rightMotorInvertDirection","Invert Direction",AttributeType.Boolean));
-		rightMotorGroup.add(new MetaDataProperty("rightMotorMinStepPeriodInMicroseconds","Min Step Period(microseconds)",AttributeType.Number));
-		metaData.add(rightMotorGroup);
-
-		
+			
 		return metaData;
 	}
 	
 	private int windowWidth=800;
 	private int windowHeight=600;
 	
-	private double frameWidth=400;
-	private double frameHeight=300;
-	private double canvasWidth=300;
-	private double canvasHeight=200;
+	private double frameWidth=375;
+	private double frameHeight=450;
+	private double canvasWidth=240;
+	private double canvasHeight=280;
 	
-	private double yPosOffset=-10; // Pen starts at 10mm above the Canvas Area
-
-	
-	private double leftMotorStepsPerMM=50.0;
-	private boolean leftMotorInvertDirection=false;
-	private long leftMotorMinStepPeriodInMicroseconds=100;
-	
-	private double rightMotorStepsPerMM=50.0;
-	private boolean rightMotorInvertDirection=false;
-	private long rightMotorMinStepPeriodInMicroseconds=100;
+	private double yPosOffset=-20; // Pen starts at 10mm above the Canvas Area
 	
 	public double getFrameWidth() {
 		return frameWidth;
@@ -137,57 +115,7 @@ public class DisplayControllerProperties extends HardwareControllerProperties {
 	public void setCanvasHeight(double canvasHeight) {
 		this.canvasHeight = canvasHeight;
 	}
-
-	public double getLeftMotorStepsPerMM() {
-		return leftMotorStepsPerMM;
-	}
-
-	public void setLeftMotorStepsPerMM(double leftMotorStepsPerMM) {
-		this.leftMotorStepsPerMM = leftMotorStepsPerMM;
-	}
-
-	public double getRightMotorStepsPerMM() {
-		return rightMotorStepsPerMM;
-	}
-
-	public void setRightMotorStepsPerMM(double rightMotorStepsPerMM) {
-		this.rightMotorStepsPerMM = rightMotorStepsPerMM;
-	}
-
-	public boolean isLeftMotorInvertDirection() {
-		return leftMotorInvertDirection;
-	}
-
-	public void setLeftMotorInvertDirection(boolean leftMotorInvertDirection) {
-		this.leftMotorInvertDirection = leftMotorInvertDirection;
-	}
-
-	public long getLeftMotorMinStepPeriodInMicroseconds() {
-		return leftMotorMinStepPeriodInMicroseconds;
-	}
-
-	public void setLeftMotorMinStepPeriodInMicroseconds(long leftMotorMinStepPeriodInMicroseconds) {
-		this.leftMotorMinStepPeriodInMicroseconds = leftMotorMinStepPeriodInMicroseconds;
-	}
-
-	public boolean isRightMotorInvertDirection() {
-		return rightMotorInvertDirection;
-	}
-
-	public void setRightMotorInvertDirection(boolean rightMotorInvertDirection) {
-		this.rightMotorInvertDirection = rightMotorInvertDirection;
-	}
-
-	public long getRightMotorMinStepPeriodInMicroseconds() {
-		return rightMotorMinStepPeriodInMicroseconds;
-	}
-
-	public void setRightMotorMinStepPeriodInMicroseconds(
-			long rightMotorMinStepPeriodInMicroseconds) {
-		this.rightMotorMinStepPeriodInMicroseconds = rightMotorMinStepPeriodInMicroseconds;
-	}
-
-
+	
 	public int getWindowWidth() {
 		return windowWidth;
 	}
