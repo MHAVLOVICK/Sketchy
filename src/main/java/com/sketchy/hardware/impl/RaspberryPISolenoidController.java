@@ -65,7 +65,7 @@ public class RaspberryPISolenoidController extends HardwareController {
 	public synchronized void penUp(){
 		if (isPenDown){
 			SoftPwm.softPwmWrite(properties.getPenPinNumber(), properties.getPenUpPowerLevel());
-			Gpio.delayMicroseconds(properties.getPenUpPeriodInMicroseconds());
+			Gpio.delayMicroseconds(properties.getPenUpPeriodInMilliseconds()*1000);
 			SoftPwm.softPwmWrite(properties.getPenPinNumber(), properties.getPenUpHoldPowerLevel());
 			isPenDown=false;
 		}
@@ -74,7 +74,7 @@ public class RaspberryPISolenoidController extends HardwareController {
 	public synchronized void penDown(){
 		if (!isPenDown){
 			SoftPwm.softPwmWrite(properties.getPenPinNumber(), 0); // off
-			Gpio.delayMicroseconds(properties.getPenDownPeriodInMicroseconds());
+			Gpio.delayMicroseconds(properties.getPenDownPeriodInMilliseconds()*1000);
 			isPenDown=true;
 		}
 	}

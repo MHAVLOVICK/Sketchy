@@ -37,13 +37,17 @@ Public License instead of this License.
 package com.sketchy.hardware.impl;
 
 
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -51,45 +55,51 @@ import com.sketchy.hardware.Direction;
 import com.sketchy.hardware.HardwareController;
 import com.sketchy.utils.DelayUtils;
 
-public class DisplayController extends HardwareController {
+public class VPlotterDisplayController extends HardwareController implements ActionListener {
 	
-	private DisplayControllerProperties properties = null;
+	private VPlotterDisplayControllerProperties properties = null;
 	
 	private JFrame jFrame = null;
 	
 	private MyPanel myPanel = null;
 
-	private BufferedImage image = null;
-
 	private long lastMotorTimeNanos=0;
-
+	
 	private int leftMotorSteps=0;
 	private int rightMotorSteps=0;
 	
-	int windowWidth;
-	int windowHeight;
+	private boolean isPenDown=true;
+	
+	private BufferedImage frameImage = null; 
 	
 	double frameWidth;
 	double frameHeight;
 	
-	double canvasWidth; 
-	double canvasHeight; 
-	
-	double canvasTopPos;	
-	double canvasLeftPos;
+	double canvasWidth;
+	double canvasHeight;
 	
 	double yPosOffset;
 	
-	private boolean isPenDown=true;
+	double leftMotorStepsPerMM;
+	double rightMotorStepsPerMM;
 
-	public DisplayController(DisplayControllerProperties properties) {
+	public VPlotterDisplayController(VPlotterDisplayControllerProperties properties) {
 		super(properties);
 		this.properties=properties;
+		
+		frameWidth = properties.getFrameWidth();
+		frameHeight = properties.getFrameHeight();
+		canvasWidth = properties.getCanvasWidth();
+		canvasHeight = properties.getCanvasHeight();
+		yPosOffset = properties.getyPosOffset();
+		leftMotorStepsPerMM=properties.getLeftMotorStepsPerMM();
+		rightMotorStepsPerMM=properties.getRightMotorStepsPerMM();
+		
 		setupDisplay();
 	}
 	
 	@Override
-	public DisplayControllerProperties getProperties(){
+	public VPlotterDisplayControllerProperties getProperties(){
 		return properties;
 	}
 	
@@ -117,7 +127,7 @@ public class DisplayController extends HardwareController {
 		
 		long delay = delayInMicroSeconds-((System.nanoTime()-lastMotorTimeNanos)/1000);
 		if (delay>0){
-			DelayUtils.sleepMicros(delay);
+			DelayUtils.sleepMicros(delay/10); // make it 10x faster 
 		}
 
 		int stepLeftMotor=0;
@@ -141,27 +151,23 @@ public class DisplayController extends HardwareController {
 		
 		leftMotorSteps+=stepLeftMotor;
 		rightMotorSteps+=stepRightMotor;
-		
-		double leftMotorLength=leftMotorSteps;
-		double rightMotorLength=rightMotorSteps;
+
+		double leftMotorLength=leftMotorSteps/leftMotorStepsPerMM;
+		double rightMotorLength=rightMotorSteps/rightMotorStepsPerMM;
 
 		if (isPenDown){
 			// this is the point on the frame
 			Point point = getPointFromMotorLengths(leftMotorLength, rightMotorLength);
-
-			// get FrameToImage ratios
-			double frameToImageWidth = frameWidth/image.getWidth();
-			double frameToImageHeight = frameHeight/image.getHeight();
 			
 			// map it to the image
-			int pixelX=(int) (point.x/frameToImageWidth);
-			int pixelY=(int) (point.y/frameToImageHeight);
+			int pixelX=(int) (point.x*leftMotorStepsPerMM);
+			int pixelY=(int) (point.y*rightMotorStepsPerMM);
 
-			if ((pixelX>=0) && (pixelX<image.getWidth()) &&
-				(pixelY>=0) && (pixelY<image.getHeight())){
-				Graphics g = image.getGraphics();
+			if ((pixelX>=0) && (pixelX<frameImage.getWidth()) &&
+				(pixelY>=0) && (pixelY<frameImage.getHeight())){
+				Graphics g = frameImage.getGraphics();
 				g.setColor(Color.black);
-				g.fillRect(pixelX, pixelY, (int) Math.ceil(1/frameToImageWidth), (int) Math.ceil(1/frameToImageHeight));
+				g.fillRect(pixelX, pixelY, (int) leftMotorStepsPerMM, (int) rightMotorStepsPerMM);
 				myPanel.repaint();
 			}
 		}
@@ -190,45 +196,39 @@ public class DisplayController extends HardwareController {
 	
 	
 	private void setupDisplay() {
+		
+		int windowWidth = properties.getWindowWidth();
+		int windowHeight = properties.getWindowHeight();
 
-		windowWidth = properties.getWindowWidth();
-		windowHeight = properties.getWindowHeight();
-		
-		frameWidth = properties.getFrameWidth();
-		frameHeight = properties.getFrameHeight();
-		canvasWidth = properties.getCanvasWidth();
-		canvasHeight = properties.getCanvasHeight();
-		
-		yPosOffset = properties.getyPosOffset();
-		
-		
 		jFrame = new JFrame();
 		jFrame.setPreferredSize(new Dimension(windowWidth, windowHeight));
 		jFrame.setSize(windowWidth, windowHeight);
-		jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		jFrame.addComponentListener(new FrameListener());
+		jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		jFrame.setResizable(false);
 		
+		int frameImageWidth = (int) Math.ceil(frameWidth*leftMotorStepsPerMM);
+		int frameImageHeight = (int) Math.ceil(frameHeight*rightMotorStepsPerMM);
+		
+		frameImage = new BufferedImage(frameImageWidth, frameImageHeight, BufferedImage.TYPE_INT_ARGB);
+		clearPage();
+		
+		myPanel = new MyPanel(frameImage);
+		jFrame.getContentPane().add(myPanel, BorderLayout.CENTER);
 
-		int panelWidth=windowWidth-(jFrame.getInsets().left + jFrame.getInsets().right);
-		int panelHeight=windowHeight-(jFrame.getInsets().top + jFrame.getInsets().bottom);
+		JButton button = new JButton("Clear Page");
+		button.addActionListener(this);
 		
-		int imageWidth = panelWidth; 
-		int imageHeight = panelHeight;
-		
-		image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-		myPanel = new MyPanel(image);
-		jFrame.getContentPane().add(myPanel);
-		
+		jFrame.getContentPane().add(button, BorderLayout.SOUTH);
 		jFrame.pack();
 
-		double currentXPos=frameWidth/2;
-		double currentYPos=frameWidth/4+yPosOffset; // pen starts at the yPosOffset (usually negative, above the paper)
+		double currentXPos=frameWidth/2.0;
+		double currentYPos=((int) (frameWidth/4.0))+properties.getyPosOffset(); // pen starts at the yPosOffset (usually negative, above the paper)
 		
 		double leftMotorLength=Math.sqrt(Math.pow(currentXPos, 2) + Math.pow(currentYPos, 2));
 		double rightMotorLength=Math.sqrt(Math.pow(frameWidth-currentXPos, 2) + Math.pow(currentYPos, 2));
 
-		leftMotorSteps = (int) leftMotorLength;
-		rightMotorSteps = (int) rightMotorLength;
+		leftMotorSteps = (int) (leftMotorLength*leftMotorStepsPerMM);
+		rightMotorSteps = (int) (rightMotorLength*rightMotorStepsPerMM);
 		
 		penDown();
 	}
@@ -241,39 +241,12 @@ public class DisplayController extends HardwareController {
 	
 	
 	private class Point {
-		
 		public double x;
 		public double y;
 		
 		public Point(double x, double y){
 			this.x = x;
 			this.y = y;
-		}
-	}
-
-	
-	private class FrameListener implements ComponentListener {
-
-		@Override
-		public void componentHidden(ComponentEvent arg0) {
-		}	
-
-		@Override
-		public void componentMoved(ComponentEvent arg0) {
-		}
-
-		@Override
-		public void componentResized(ComponentEvent arg0) {
-		}
-
-		@Override
-		public void componentShown(ComponentEvent arg0) {
-			if (image!=null){
-				Graphics g = image.getGraphics();
-				g.setColor(Color.white);
-				g.fillRect(0, 0, image.getWidth()-1,  image.getHeight()-1);
-				myPanel.repaint();
-			}
 		}
 	}
 	
@@ -283,16 +256,60 @@ public class DisplayController extends HardwareController {
 		private BufferedImage image;
 		
 		public MyPanel(BufferedImage image){
+			super();
 			this.image = image;
 		}
 		
 		@Override
 		public void paint(Graphics g) {
-			g.setColor(Color.white);
-			g.drawRect((int) canvasLeftPos, (int)(canvasTopPos), (int)(canvasWidth), (int)canvasHeight);
+			super.paint(g);
 			
-			g.drawImage(image, 0, 0, myPanel.getWidth(), myPanel.getHeight(), 0,0,image.getWidth(), image.getHeight(), null);
+			g.setColor(Color.white);
+			
+			int panelWidth=getWidth();
+			int panelHeight=getHeight();
+			
+			int imageWidth=image.getWidth();
+			int imageHeight=image.getHeight();
+
+			double widthScale = panelWidth/(double) imageWidth;
+			double heightScale = panelHeight/(double) imageHeight;
+			double scale=Math.min(widthScale, heightScale);
+			
+			int scaleWidth=(int) (imageWidth*scale);
+			int scaleHeight=(int) (imageHeight*scale); 
+			
+			int topPos=(panelHeight-scaleHeight)/2;
+			int leftPos=(panelWidth-scaleWidth)/2;
+			
+			g.drawImage(image, leftPos, topPos, leftPos+scaleWidth-1, topPos + scaleHeight-1, 0,0, imageWidth, imageHeight, null);
 		}
 	}
+	
+	private void clearPage(){
+		
+		int frameImageWidth = frameImage.getWidth();
+		int frameImageHeight = frameImage.getHeight();
+
+		int canvasLeft = (int) Math.ceil(((frameWidth-canvasWidth)/2.0)*leftMotorStepsPerMM);
+		int canvasTop = (int) Math.ceil((frameWidth/4.0)*rightMotorStepsPerMM);
+		Graphics2D g = (Graphics2D) frameImage.getGraphics();
+		g.setBackground(Color.white);
+		g.setColor(Color.black);
+		
+		float thickness = (float) Math.max(leftMotorStepsPerMM, rightMotorStepsPerMM);
+		//Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(thickness));
+		g.clearRect(0, 0, frameImageWidth-1, frameImageHeight-1);
+		g.drawRect(0, 0, frameImageWidth-1, frameImageHeight-1);
+		g.drawRect(canvasLeft-1, canvasTop-1, (int) Math.ceil(canvasWidth*leftMotorStepsPerMM)+1, (int) Math.ceil(canvasHeight*rightMotorStepsPerMM)+1);
+		if (myPanel!=null){
+			myPanel.repaint();
+		}
+	}
+	
+	public void actionPerformed(ActionEvent evt) {
+	 	clearPage();
+	 }
 	
 }

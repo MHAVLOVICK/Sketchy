@@ -43,19 +43,20 @@ import com.sketchy.metadata.MetaDataGroup;
 import com.sketchy.metadata.MetaDataProperty;
 import com.sketchy.metadata.MetaDataProperty.AttributeType;
 
-public class DisplayControllerProperties extends HardwareControllerProperties {
+public class VPlotterDisplayControllerProperties extends HardwareControllerProperties {
 	
 	private static final long serialVersionUID = -8825894320870849739L;
 
 	@Override
 	public Class<? extends HardwareController> getImplementationClass() {
-		return DisplayController.class; 
+		return VPlotterDisplayController.class; 
 	}
 	
 	@Override	
 	public MetaData getMetaData() {
 		
 		MetaData metaData = new MetaData();
+		metaData.setHelpImage("/images/VPlotterDisplayController.png");
 
 		MetaDataGroup displayGroup = new MetaDataGroup("Display");
 		displayGroup.add(new MetaDataProperty("windowWidth","Window Width",AttributeType.Number));
@@ -70,6 +71,13 @@ public class DisplayControllerProperties extends HardwareControllerProperties {
 		canvasGroup.add(new MetaDataProperty("yPosOffset","Home Y Position Offset",AttributeType.Decimal,true));
 		metaData.add(canvasGroup);
 
+		MetaDataGroup leftMotorGroup = new MetaDataGroup("Left Motor");
+		leftMotorGroup.add(new MetaDataProperty("leftMotorStepsPerMM","Steps Per Millimeter",AttributeType.Decimal));
+		metaData.add(leftMotorGroup);
+
+		MetaDataGroup rightMotorGroup = new MetaDataGroup("Right Motor");
+		rightMotorGroup.add(new MetaDataProperty("rightMotorStepsPerMM","Steps Per Millimeter",AttributeType.Decimal));
+		metaData.add(rightMotorGroup);
 			
 		return metaData;
 	}
@@ -77,13 +85,41 @@ public class DisplayControllerProperties extends HardwareControllerProperties {
 	private int windowWidth=800;
 	private int windowHeight=600;
 	
-	private double frameWidth=375;
-	private double frameHeight=450;
+	private double yPosOffset=-20;
+	
+	private double frameWidth=375;  
+	private double frameHeight=450; 
+
 	private double canvasWidth=240;
 	private double canvasHeight=280;
-	
-	private double yPosOffset=-20; // Pen starts at 10mm above the Canvas Area
-	
+
+	private double leftMotorStepsPerMM=32.5;
+	private double rightMotorStepsPerMM=32.5;
+
+	public int getWindowWidth() {
+		return windowWidth;
+	}
+
+	public void setWindowWidth(int windowWidth) {
+		this.windowWidth = windowWidth;
+	}
+
+	public int getWindowHeight() {
+		return windowHeight;
+	}
+
+	public void setWindowHeight(int windowHeight) {
+		this.windowHeight = windowHeight;
+	}
+
+	public double getyPosOffset() {
+		return yPosOffset;
+	}
+
+	public void setyPosOffset(double yPosOffset) {
+		this.yPosOffset = yPosOffset;
+	}
+
 	public double getFrameWidth() {
 		return frameWidth;
 	}
@@ -115,34 +151,20 @@ public class DisplayControllerProperties extends HardwareControllerProperties {
 	public void setCanvasHeight(double canvasHeight) {
 		this.canvasHeight = canvasHeight;
 	}
-	
-	public int getWindowWidth() {
-		return windowWidth;
+
+	public double getLeftMotorStepsPerMM() {
+		return leftMotorStepsPerMM;
 	}
 
-
-	public void setWindowWidth(int windowWidth) {
-		this.windowWidth = windowWidth;
+	public void setLeftMotorStepsPerMM(double leftMotorStepsPerMM) {
+		this.leftMotorStepsPerMM = leftMotorStepsPerMM;
 	}
 
-
-	public int getWindowHeight() {
-		return windowHeight;
+	public double getRightMotorStepsPerMM() {
+		return rightMotorStepsPerMM;
 	}
 
-
-	public void setWindowHeight(int windowHeight) {
-		this.windowHeight = windowHeight;
+	public void setRightMotorStepsPerMM(double rightMotorStepsPerMM) {
+		this.rightMotorStepsPerMM = rightMotorStepsPerMM;
 	}
-
-
-	public double getyPosOffset() {
-		return yPosOffset;
-	}
-
-
-	public void setyPosOffset(double yPosOffset) {
-		this.yPosOffset = yPosOffset;
-	}
-
 }

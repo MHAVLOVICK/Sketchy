@@ -82,7 +82,7 @@ public class RaspberryPIServoController extends HardwareController {
 			} catch (Exception e){
 				throw new RuntimeException(e.getMessage());
 			}
-			Gpio.delayMicroseconds(properties.getPenUpPeriodInMicroseconds());
+			Gpio.delayMicroseconds(properties.getPenUpPeriodInMilliseconds()*1000);
 			lastPosition=properties.getPenUpPosition();
 		}
 	}
@@ -96,7 +96,7 @@ public class RaspberryPIServoController extends HardwareController {
 			} catch (Exception e){
 				throw new RuntimeException(e.getMessage());
 			}
-			Gpio.delayMicroseconds(properties.getPenDownPeriodInMicroseconds());
+			Gpio.delayMicroseconds(properties.getPenDownPeriodInMilliseconds()*1000);
 			lastPosition=properties.getPenDownPosition();
 		}
 	}

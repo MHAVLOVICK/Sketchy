@@ -79,8 +79,8 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 
 		MetaDataGroup penGroup = new MetaDataGroup("Pen");
 		penGroup.add(new MetaDataProperty("penPinNumber","Pin Number",AttributeType.List, RaspberryPiPins.pins));
-		penGroup.add(new MetaDataProperty("penDownPeriodInMicroseconds","Down Stable Period(microseconds)",AttributeType.Number));
-		penGroup.add(new MetaDataProperty("penUpPeriodInMicroseconds","Up Stable Period (microseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penDownPeriodInMilliseconds","Down Stable Period(milliseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penUpPeriodInMilliseconds","Up Stable Period (milliseconds)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpPowerLevel","Power Level(0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpHoldPowerLevel","Hold Power Level(0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUp","Pen Up",AttributeType.Button));	
@@ -105,8 +105,8 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 	private long rightMotorMinStepPeriodInMicroseconds=150;
 	
 	private int penPinNumber=18;
-	private long penDownPeriodInMicroseconds=100000;
-	private long penUpPeriodInMicroseconds=50000;
+	private long penDownPeriodInMilliseconds=100;
+	private long penUpPeriodInMilliseconds=50;
 	private int penUpPowerLevel=30;
 	private int penUpHoldPowerLevel=20;
 
@@ -200,20 +200,20 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 		this.penPinNumber = penPinNumber;
 	}
 
-	public long getPenDownPeriodInMicroseconds() {
-		return penDownPeriodInMicroseconds;
+	public long getPenDownPeriodInMilliseconds() {
+		return penDownPeriodInMilliseconds;
 	}
 
-	public void setPenDownPeriodInMicroseconds(long penDownPeriodInMicroseconds) {
-		this.penDownPeriodInMicroseconds = penDownPeriodInMicroseconds;
+	public void setPenDownPeriodInMilliseconds(long penDownPeriodInMilliseconds) {
+		this.penDownPeriodInMilliseconds = penDownPeriodInMilliseconds;
 	}
 
-	public long getPenUpPeriodInMicroseconds() {
-		return penUpPeriodInMicroseconds;
+	public long getPenUpPeriodInMilliseconds() {
+		return penUpPeriodInMilliseconds;
 	}
 
-	public void setPenUpPeriodInMicroseconds(long penUpPeriodInMicroseconds) {
-		this.penUpPeriodInMicroseconds = penUpPeriodInMicroseconds;
+	public void setPenUpPeriodInMilliseconds(long penUpPeriodInMilliseconds) {
+		this.penUpPeriodInMilliseconds = penUpPeriodInMilliseconds;
 	}
 
 	public int getPenUpPowerLevel() {

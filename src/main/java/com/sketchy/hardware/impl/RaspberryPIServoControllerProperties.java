@@ -81,8 +81,8 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 		penGroup.add(new MetaDataProperty("servoDevicePipe","Servo Device Pipe",AttributeType.String, true));
 
 		penGroup.add(new MetaDataProperty("penPinNumber","Pin Number",AttributeType.List, RaspberryPiPins.pins));
-		penGroup.add(new MetaDataProperty("penDownPeriodInMicroseconds","Down Period(microseconds)",AttributeType.Number));
-		penGroup.add(new MetaDataProperty("penUpPeriodInMicroseconds","Up Period(microseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penDownPeriodInMilliseconds","Down Stable Period(milliseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penUpPeriodInMilliseconds","Up Stable Period (milliseconds)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penDownPosition","Pen Down Position (0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpPosition","Pen Up Position (0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUp","Pen Up",AttributeType.Button));	
@@ -108,8 +108,8 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 	
 	private String servoDevicePipe = "/dev/pigpio";
 	private int penPinNumber=18;
-	private long penDownPeriodInMicroseconds=100000;
-	private long penUpPeriodInMicroseconds=100000;
+	private long penDownPeriodInMilliseconds=100;
+	private long penUpPeriodInMilliseconds=100;
 	private int penDownPosition=40;
 	private int penUpPosition=60;
 
@@ -203,22 +203,22 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 		this.penPinNumber = penPinNumber;
 	}
 
-	public long getPenDownPeriodInMicroseconds() {
-		return penDownPeriodInMicroseconds;
+	public long getPenDownPeriodInMilliseconds() {
+		return penDownPeriodInMilliseconds;
 	}
 
-	public void setPenDownPeriodInMicroseconds(long penDownPeriodInMicroseconds) {
-		this.penDownPeriodInMicroseconds = penDownPeriodInMicroseconds;
+	public void setPenDownPeriodInMilliseconds(long penDownPeriodInMilliseconds) {
+		this.penDownPeriodInMilliseconds = penDownPeriodInMilliseconds;
 	}
 
-	public long getPenUpPeriodInMicroseconds() {
-		return penUpPeriodInMicroseconds;
+	public long getPenUpPeriodInMilliseconds() {
+		return penUpPeriodInMilliseconds;
 	}
 
-	public void setPenUpPeriodInMicroseconds(long penUpPeriodInMicroseconds) {
-		this.penUpPeriodInMicroseconds = penUpPeriodInMicroseconds;
+	public void setPenUpPeriodInMilliseconds(long penUpPeriodInMilliseconds) {
+		this.penUpPeriodInMilliseconds = penUpPeriodInMilliseconds;
 	}
-	
+
 	public int getPenDownPosition() {
 		return penDownPosition;
 	}
