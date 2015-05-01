@@ -257,13 +257,15 @@ public class SketchyImage {
 	public boolean[][] toBooleanBitmapArray(int x, int y, int width, int height) throws Exception {
 	    byte[] buffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 	    boolean[][] ret = new boolean[width][height];
-
-	    int bufferIdx=0;
+	    int imageWidth=image.getWidth();
+	    
 	    for (int yIdx=0;yIdx<height;yIdx++){
-		    for (int xIdx=0;xIdx<width;xIdx++){
-		    	ret[xIdx][yIdx] = buffer[bufferIdx++]==0;
+	    	int yOffset=yIdx*imageWidth;
+	    	for (int xIdx=0;xIdx<width;xIdx++){
+		    	ret[xIdx][yIdx] = buffer[yOffset+xIdx]==0;
 		    }
 	    }
+
 	    return ret;
     }
 	

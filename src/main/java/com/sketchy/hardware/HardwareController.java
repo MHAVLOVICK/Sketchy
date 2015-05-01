@@ -54,8 +54,6 @@ public abstract class HardwareController {
 	
 	private static HardwareController _this = null;
 	
-	//private static HardwareController hardwareInterface = null;
-	
 	public abstract HardwareControllerProperties getProperties();
 
 	public synchronized static HardwareController getInstance() throws Exception {

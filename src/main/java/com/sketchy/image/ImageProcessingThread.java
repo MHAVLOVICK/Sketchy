@@ -107,6 +107,22 @@ public class ImageProcessingThread extends Thread{
 
 			File sourceImage = HttpServer.getUploadFile(ImageAttributes.getImageFilename(renderedImageAttributes.getSourceImageName()));
 			BufferedImage bufferedImage = ImageIO.read(sourceImage);
+
+			if (cancel){
+				throw new CancelledException();
+			}
+			progress=25;
+			if ((renderedImageAttributes.isInvertImage())){
+				statusMessage = "Inverting Image";
+				MarvinImage image = new MarvinImage(bufferedImage);
+				MarvinImagePlugin plugin = MarvinPluginLoader.loadImagePlugin("org.marvinproject.image.color.invert.jar");
+				if (plugin==null){
+					throw new Exception("Error loading Marvin Invert Image Plugin!");
+				}
+				plugin.process(image,image,null,MarvinImageMask.NULL_MASK, false);
+				image.update();
+				bufferedImage = image.getBufferedImage();
+			}
 			
 			if (cancel){
 				throw new CancelledException();

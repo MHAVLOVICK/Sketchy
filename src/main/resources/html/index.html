@@ -92,8 +92,11 @@ Public License instead of this License.
 	
 	<body>
 		<div>
-			<img src="images/Sketchy-Logo.png"/>
-			<div id="main-tabs">
+			<div style="position: relative">
+				<img src="images/Sketchy-Logo.png"/>
+			</div>
+			
+			<div id="main-tabs" style="clear:both">
 				<ul>
 					<li><a href="#image-page" id="image-tab">Image</a></li>
 					<li><a href="#settings-page" id="settings-tab">Settings</a></li>
@@ -332,10 +335,11 @@ Public License instead of this License.
 		  			Pen Width: <select style="width: 200px;" class="imageOption" id="penWidth" name="penWidth"></select><br/><br/>
 		  			
 					<fieldset>
-					<legend>Process Type</legend>		  			
+						<legend>Render Options</legend>		  			
 						<input type="radio" class="imageOption" name="renderOption" value="RENDER_NORMAL" checked="checked"/>Normal &nbsp;
 						<input type="radio" class="imageOption" name="renderOption" value="RENDER_HALFTONE"/>Halftone &nbsp;
 						<input type="radio" class="imageOption" name="renderOption" value="RENDER_EDGE_DETECTION"/>Edge Detection &nbsp;
+						<input type="checkbox" class="imageOption" name="invertImage" value="true"/>Invert Image		  			
 					</fieldset>
 					<br/>							  			
 					<fieldset>

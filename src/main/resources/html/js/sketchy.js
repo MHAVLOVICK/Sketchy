@@ -48,7 +48,7 @@ $( document ).ready(function() {
 	updateDrawingStatus();
 
 	$("#settings-tab").on("click", function(e){
-		loadDrawingSettings();
+		 $('#settings-drawing-tab').click();
 	});
 	
 	$("#settings-drawing-tab").on("click", function(e){
@@ -97,6 +97,10 @@ $( document ).ready(function() {
 
 	$("#saveHardwareSettingsButton").on("click", function(e){
 		saveHardwareSettings();
+	});
+	
+	$("#advanced-tab").on("click", function(e){
+		$("#advanced-upgrade-tab").click();
 	});
 	
 	$("#advanced-network-tab").on("click", function(e){
@@ -745,7 +749,9 @@ function loadRenderForm(){
 
 
 function populateRenderForm(data){
-	var selectedOption = $('#drawingSize option:selected').val();
+	var selectedDrawingSizeOption = $('#drawingSize option:selected').val();
+	var selectedPenWidthOption = $('#penWidth option:selected').val();
+	
 	$('#drawingSize').html("");
 	$('#penWidth').html("");
 	if (data!=null){
@@ -764,7 +770,8 @@ function populateRenderForm(data){
 		});
 		$("#penWidth option[value='" + data.penWidth +"']").prop('selected', true);
 	}
-	$("#drawingSize option[value='" + selectedOption +"']").prop('selected', true);
+	$("#drawingSize option[value='" + selectedDrawingSizeOption +"']").prop('selected', true);
+	$("#penWidth option[value='" + selectedPenWidthOption +"']").prop('selected', true);
 
 }
 
@@ -826,15 +833,15 @@ function saveNetworkSettings() {
 
 function upgradeSoftware(){
 	jsonPostRequest("/servlet/UpgradeSoftware","", function(data){
-   		$("#upgradeMessage").html("The Software has been upgraded, but a reboot is required!");
-		showMessage("Sketchy has been Upgraded!");
+   		$("#upgradeMessage").html("The Software has been upgraded. Please reboot!");
+		showMessage("The Software has been upgraded. Please reboot!");
 	});
 }
 
 function restart(){
 	jsonPostRequest("/servlet/Restart","", function(data){
 		clearTimeout(__updateDrawingStatusTimer);
-   		showMessage("The Raspberry Pi is now Restarting. Please refresh the browser in 60 seconds!", 60000);
+   		showMessage("The Raspberry Pi is now Restarting. Please refresh the page in a couple minutes!", 60000);
 	});
 }
 

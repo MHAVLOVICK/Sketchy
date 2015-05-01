@@ -73,6 +73,8 @@ public class RenderedImageAttributes extends ImageAttributes{
 	
 	private CenterOption centerOption=CenterOption.CENTER_BOTH;
 	
+	private boolean invertImage=false;
+	
 
 	private String drawingSize="";
 
@@ -154,6 +156,14 @@ public class RenderedImageAttributes extends ImageAttributes{
 
 	public void setRenderOption(RenderOption renderOption) {
 		this.renderOption = renderOption;
+	}
+
+	public boolean isInvertImage() {
+		return invertImage;
+	}
+
+	public void setInvertImage(boolean invertImage) {
+		this.invertImage = invertImage;
 	}
 	
 }
