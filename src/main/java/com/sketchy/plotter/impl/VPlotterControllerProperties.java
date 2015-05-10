@@ -57,7 +57,7 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 		
 		MetaData metaData = new MetaData();
 		
-		metaData.setHelpImage("/images/VPlotterDiagram.png");
+		metaData.setHelpUrl("/docs/VPlotter.html");
 		
 		MetaDataGroup frame = new MetaDataGroup("Frame");
 		frame.add(new MetaDataProperty("frameWidth","Width",AttributeType.Decimal,true));
@@ -99,8 +99,8 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 	private double canvasWidth=240;
 	private double canvasHeight=280;
 
-	private double leftMotorStepsPerMM=32.5;
-	private double rightMotorStepsPerMM=32.5;
+	private double leftMotorStepsPerMM=32.8;
+	private double rightMotorStepsPerMM=32.8;
 
 	private double unitIncrement=0;
 	

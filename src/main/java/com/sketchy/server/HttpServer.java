@@ -61,11 +61,6 @@ public class HttpServer {
 	
 	public static final File SKETCHY_PROPERTY_FILE=new File("SketchyProperties.json");
 	public static final File IMAGE_UPLOAD_DIRECTORY = new File("upload");
-	//public static final File IMAGE_UPLOAD_DIRECTORY = new File("upload");
-	//UPGRADE_FILE_UPLOAD_DIRECTORY
-	//public static final File FILE_UPLOAD_DIRECTORY = new File("upload");
-	
-	
 	
 	public static ImageProcessingThread imageProcessingThread = null;
 	public static DrawingProcessorThread drawingProccessorThread = null;

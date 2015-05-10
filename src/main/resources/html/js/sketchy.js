@@ -494,15 +494,16 @@ function defaultErrorCallback(message){
 	showError("ERROR: " + message);
 }
 
-function jsonGetRequest(URL, jsonString, successCallback, errorCallback, ignoreCommunicationError){
-	jsonRequest(URL, "GET", jsonString, successCallback, errorCallback, ignoreCommunicationError);
+function jsonGetRequest(URL, jsonString, successCallback, errorCallback, ignoreCommunicationError, timeout){
+	jsonRequest(URL, "GET", jsonString, successCallback, errorCallback, ignoreCommunicationError, timeout);
 }
 
-function jsonPostRequest(URL, jsonString, successCallback, errorCallback, ignoreCommunicationError){
-	jsonRequest(URL, "POST", jsonString, successCallback, errorCallback, ignoreCommunicationError);
+function jsonPostRequest(URL, jsonString, successCallback, errorCallback, ignoreCommunicationError, timeout){
+	jsonRequest(URL, "POST", jsonString, successCallback, errorCallback, ignoreCommunicationError, timeout);
 }
 
-function jsonRequest(URL, method, jsonString, successCallback, errorCallback, ignoreCommunicationError){
+function jsonRequest(URL, method, jsonString, successCallback, errorCallback, ignoreCommunicationError, timeout){
+	if (timeout==null) timeout=15000;
 	jQuery.ajax({
        	url: URL,
       	type: method,
@@ -510,7 +511,7 @@ function jsonRequest(URL, method, jsonString, successCallback, errorCallback, ig
       	data: jsonString,
       	cache: false,
        	processData: true,
-       	timeout:10000,
+       	timeout: timeout,
        	success: function (data) {
        		if (data.status==="SUCCESS") {
        			if (successCallback){
@@ -590,7 +591,7 @@ function testHardwareSettings(action) {
 	    },
 	    function(data){
 	    	showError(data.message);	
-	    }
+	    }, false, 30000
 	);
 }
 
@@ -1173,8 +1174,8 @@ function buildPageProperties(propertiesDiv, metaData){
 
 	html+="</table></div>";
 	html+="<div style='display:inline-block; margin: 20px 0 0 20px;'>";
-	if (metaData.helpImage!==null){
-		html+="<img src='" + metaData.helpImage + "' height='600'/>";
+	if (metaData.helpUrl!==null){
+		html+="<iframe src='" + metaData.helpUrl + "' width='400' height='400'/>";
 	}
 	html+="</div>";
 	propertiesDiv.html(html);

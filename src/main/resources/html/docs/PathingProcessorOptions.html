@@ -1,4 +1,4 @@
-/*
+<!-- 
     Sketchy
     Copyright (C) 2015 Matthew Havlovick
     http://www.quickdrawbot.com
@@ -32,32 +32,19 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
 
-package com.sketchy.metadata;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class MetaData {
+ -->
+ 
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Pathing Options</title>
+	</head>
 	
-	private List<MetaDataGroup> metaDataGroups = new ArrayList<MetaDataGroup>();
-	private String helpUrl=null;
-
-	public List<MetaDataGroup> getMetaDataGroups() {
-		return metaDataGroups;
-	}
-	
-	public void add(MetaDataGroup metaDataGroup){
-		metaDataGroups.add(metaDataGroup);
-	}
-
-	public String getHelpUrl() {
-		return helpUrl;
-	}
-
-	public void setHelpUrl(String helpUrl) {
-		this.helpUrl = helpUrl;
-	}
-	
-}
+	<body>
+		<div>
+			<img src="images/PathingProcessorOptions.png"/>
+		</div>
+	</body>
+</html>

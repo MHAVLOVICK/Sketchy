@@ -94,15 +94,15 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 	}
 	
 		
-	private int leftMotorStepPinNumber=24;
-	private int leftMotorDirectionPinNumber=25;
-	private int leftMotorEnablePinNumber=23;
+	private int leftMotorStepPinNumber=27;
+	private int leftMotorDirectionPinNumber=22;
+	private int leftMotorEnablePinNumber=17;
 	private boolean leftMotorInvertDirection=false;
 	private long leftMotorMinStepPeriodInMicroseconds=150;
 	
-	private int rightMotorStepPinNumber=27;
-	private int rightMotorDirectionPinNumber=22;
-	private int rightMotorEnablePinNumber=17;
+	private int rightMotorStepPinNumber=24;
+	private int rightMotorDirectionPinNumber=25;
+	private int rightMotorEnablePinNumber=23;
 	private boolean rightMotorInvertDirection=true;
 	private long rightMotorMinStepPeriodInMicroseconds=150;
 	

@@ -56,7 +56,7 @@ public class VPlotterDisplayControllerProperties extends HardwareControllerPrope
 	public MetaData getMetaData() {
 		
 		MetaData metaData = new MetaData();
-		metaData.setHelpImage("/images/VPlotterDisplayController.png");
+		metaData.setHelpUrl("/docs/VPlotterDisplayController.html");
 
 		MetaDataGroup displayGroup = new MetaDataGroup("Display");
 		displayGroup.add(new MetaDataProperty("windowWidth","Window Width",AttributeType.Number));
@@ -93,8 +93,8 @@ public class VPlotterDisplayControllerProperties extends HardwareControllerPrope
 	private double canvasWidth=240;
 	private double canvasHeight=280;
 
-	private double leftMotorStepsPerMM=32.5;
-	private double rightMotorStepsPerMM=32.5;
+	private double leftMotorStepsPerMM=10;
+	private double rightMotorStepsPerMM=10;
 
 	public int getWindowWidth() {
 		return windowWidth;
