@@ -39,17 +39,31 @@ Public License instead of this License.
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>VPlotter Display Controller</title>
+		<title>Drawing Properties</title>
+		<style>
+			.bold {
+				font-weight: bold;
+				font-size: 18px;
+			}
+		</style>
 	</head>
 	
 	<body>
-		<h1>VPlotter Display Controller</h1>
-		<br/>
-		The VPlotterDisplayController is used to simulate an actual DrawBot and primarily used for development and testing.
-		<br/><br/>
-		It opens up a window to display the drawing so therefore it must run in a GUI environment.
-		<br/><br/>
-		As it simulates a physical DrawBot, dimensions must be defined and should match the values setup on the Plotter setup.
-		<br/><br/>
+		<div>
+			<h1>Drawing Properties</h1>
+			
+			<h2>Default Pen Width</h2>
+			Select the Default Pen Width that shown on the Render page when first starting up the QuickDraw.
+			<br/>
+			<br/>						
+			<h2>Drawing Sizes</h2>
+			Drawing Sizes can be defined and are shown in the drop down list on the Render page.
+			<br/>
+			<br/>
+			Each Drawing size is defined by a width x height (in mm),<br/>For example: "200x250"
+			<br/>
+			<br/>
+			Text can also be added to the end of the Drawing size to help describe it,<br/>For example. "200x250 (Letter-Portrait)"
+		</div>
 	</body>
 </html>

@@ -223,6 +223,9 @@ $( document ).ready(function() {
 				id: "dialog-cancelButton",
 				click: function() {
 					setDrawingStatus("cancel");
+					if ($("#dialog-drawingStatus").dialog( "isOpen" )===true) {
+						$("#dialog-drawingStatus").dialog( "close" );
+					}
 				}
 		   	}
 		}
@@ -427,7 +430,6 @@ $( document ).ready(function() {
 //***** Grid globals and functions
 
 var __gridSelectedImage;
-var __updateDrawingStatusTimer;
 
 function onGridImageFileSelected(imageType, imageName, imageFileName){
 		
@@ -841,14 +843,12 @@ function upgradeSoftware(){
 
 function restart(){
 	jsonPostRequest("/servlet/Restart","", function(data){
-		clearTimeout(__updateDrawingStatusTimer);
    		showMessage("The Raspberry Pi is now Restarting. Please refresh the page in a couple minutes!", 60000);
 	});
 }
 
 function shutDown(){
 	jsonPostRequest("/servlet/Shutdown","", function(data){
-		clearTimeout(__updateDrawingStatusTimer);
    		showMessage("The Raspberry Pi is Shutting Down. Please wait 60 seconds before disconnecting power!", 60000);
 	});
 }
@@ -862,7 +862,7 @@ function renderImage(){
 
 
 function drawImage(imageName){
-	jsonGetRequest("/servlet/DrawImage?imageName="+imageName, "", function(data){});	
+	jsonGetRequest("/servlet/DrawImage?imageName="+imageName, "", function(data){});
 }
 
 function setDrawingStatus(action){
@@ -1004,9 +1004,9 @@ function updateDrawingStatus() {
 		}, 
 		function(data){
 			showError(data.message);
-	    },true
+	    },true, 5000 // make it a shorter timeout
 	);
-	__updateDrawingStatusTimer=setTimeout('updateDrawingStatus()',1000);
+	setTimeout('updateDrawingStatus()',1000);
 }
 
 function addListFile(filename){
@@ -1122,11 +1122,6 @@ function showRenderDialog(){
 	updateRenderStatus();
 }
 
-function showDrawingDialog(){
-	updateDrawingStatus();
-}
-
-
 function formButtonClicked(buttonId, buttonValue){
 	testHardwareSettings(buttonId);
 }
@@ -1175,7 +1170,7 @@ function buildPageProperties(propertiesDiv, metaData){
 	html+="</table></div>";
 	html+="<div style='display:inline-block; margin: 20px 0 0 20px;'>";
 	if (metaData.helpUrl!==null){
-		html+="<iframe src='" + metaData.helpUrl + "' width='400' height='400'/>";
+		html+="<iframe src='" + metaData.helpUrl + "' width='700' height='600'/>";
 	}
 	html+="</div>";
 	propertiesDiv.html(html);

@@ -56,6 +56,7 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 	public MetaData getMetaData() {
 		
 		MetaData metaData = new MetaData();
+		metaData.setHelpUrl("/docs/RaspberryPISolenoidController.html");
 		
 		MetaDataGroup leftMotorGroup = new MetaDataGroup("Left Motor");
 		leftMotorGroup.add(new MetaDataProperty("leftMotorStepPinNumber","Step Pin Number",AttributeType.List, RaspberryPiPins.pins));
@@ -79,8 +80,8 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 
 		MetaDataGroup penGroup = new MetaDataGroup("Pen");
 		penGroup.add(new MetaDataProperty("penPinNumber","Pin Number",AttributeType.List, RaspberryPiPins.pins));
-		penGroup.add(new MetaDataProperty("penDownPeriodInMilliseconds","Down Stable Period(milliseconds)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpPeriodInMilliseconds","Up Stable Period (milliseconds)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penDownPeriodInMilliseconds","Down Stable Period(milliseconds)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpPowerLevel","Power Level(0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpHoldPowerLevel","Hold Power Level(0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUp","Pen Up",AttributeType.Button));	
@@ -92,21 +93,21 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 	}
 	
 		
-	private int leftMotorStepPinNumber=27;
-	private int leftMotorDirectionPinNumber=22;
-	private int leftMotorEnablePinNumber=17;
+	private int leftMotorStepPinNumber=24;
+	private int leftMotorDirectionPinNumber=25;
+	private int leftMotorEnablePinNumber=23;
 	private boolean leftMotorInvertDirection=false;
-	private long leftMotorMinStepPeriodInMicroseconds=150;
+	private long leftMotorMinStepPeriodInMicroseconds=125;
 	
-	private int rightMotorStepPinNumber=24;
-	private int rightMotorDirectionPinNumber=25;
-	private int rightMotorEnablePinNumber=23;
+	private int rightMotorStepPinNumber=27;
+	private int rightMotorDirectionPinNumber=22;
+	private int rightMotorEnablePinNumber=17;
 	private boolean rightMotorInvertDirection=true;
-	private long rightMotorMinStepPeriodInMicroseconds=150;
+	private long rightMotorMinStepPeriodInMicroseconds=125;
 	
 	private int penPinNumber=18;
-	private long penDownPeriodInMilliseconds=100;
-	private long penUpPeriodInMilliseconds=50;
+	private long penDownPeriodInMilliseconds=200;
+	private long penUpPeriodInMilliseconds=100;
 	private int penUpPowerLevel=30;
 	private int penUpHoldPowerLevel=20;
 

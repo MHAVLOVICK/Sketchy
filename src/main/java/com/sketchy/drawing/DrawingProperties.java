@@ -54,6 +54,7 @@ public class DrawingProperties extends MetaDataObject {
 	public MetaData getMetaData() {
 		
 		MetaData metaData = new MetaData();
+		metaData.setHelpUrl("docs/DrawingProperties.html");
 		
 		MetaDataGroup defaultGroup = new MetaDataGroup("Defaults");
 		defaultGroup.add(new MetaDataProperty("defaultPenWidth","Default Pen Width (mm)",AttributeType.List, SketchyContext.PEN_SIZES));

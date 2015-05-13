@@ -56,6 +56,7 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 	public MetaData getMetaData() {
 		
 		MetaData metaData = new MetaData();
+		metaData.setHelpUrl("/docs/RaspberryPIServoController.html");		
 		
 		MetaDataGroup leftMotorGroup = new MetaDataGroup("Left Motor");
 		leftMotorGroup.add(new MetaDataProperty("leftMotorStepPinNumber","Step Pin Number",AttributeType.List, RaspberryPiPins.pins));
@@ -81,10 +82,10 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 		penGroup.add(new MetaDataProperty("servoDevicePipe","Servo Device Pipe",AttributeType.String, true));
 
 		penGroup.add(new MetaDataProperty("penPinNumber","Pin Number",AttributeType.List, RaspberryPiPins.pins));
-		penGroup.add(new MetaDataProperty("penDownPeriodInMilliseconds","Down Stable Period(milliseconds)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpPeriodInMilliseconds","Up Stable Period (milliseconds)",AttributeType.Number));
-		penGroup.add(new MetaDataProperty("penDownPosition","Pen Down Position (0-100)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penDownPeriodInMilliseconds","Down Stable Period(milliseconds)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUpPosition","Pen Up Position (0-100)",AttributeType.Number));
+		penGroup.add(new MetaDataProperty("penDownPosition","Pen Down Position (0-100)",AttributeType.Number));
 		penGroup.add(new MetaDataProperty("penUp","Pen Up",AttributeType.Button));	
 		penGroup.add(new MetaDataProperty("penDown","Pen Down",AttributeType.Button));	
 		penGroup.add(new MetaDataProperty("penCycle","Cycle 5 Times",AttributeType.Button));	
@@ -94,24 +95,24 @@ public class RaspberryPIServoControllerProperties extends HardwareControllerProp
 	}
 	
 		
-	private int leftMotorStepPinNumber=27;
-	private int leftMotorDirectionPinNumber=22;
-	private int leftMotorEnablePinNumber=17;
+	private int leftMotorStepPinNumber=24;
+	private int leftMotorDirectionPinNumber=25;
+	private int leftMotorEnablePinNumber=23;
 	private boolean leftMotorInvertDirection=false;
-	private long leftMotorMinStepPeriodInMicroseconds=150;
+	private long leftMotorMinStepPeriodInMicroseconds=125;
 	
-	private int rightMotorStepPinNumber=24;
-	private int rightMotorDirectionPinNumber=25;
-	private int rightMotorEnablePinNumber=23;
+	private int rightMotorStepPinNumber=27;
+	private int rightMotorDirectionPinNumber=22;
+	private int rightMotorEnablePinNumber=17;
 	private boolean rightMotorInvertDirection=true;
-	private long rightMotorMinStepPeriodInMicroseconds=150;
+	private long rightMotorMinStepPeriodInMicroseconds=125;
 	
 	private String servoDevicePipe = "/dev/pigpio";
 	private int penPinNumber=18;
-	private long penDownPeriodInMilliseconds=100;
-	private long penUpPeriodInMilliseconds=100;
-	private int penDownPosition=40;
-	private int penUpPosition=60;
+	private long penDownPeriodInMilliseconds=250;
+	private long penUpPeriodInMilliseconds=250;
+	private int penDownPosition=30;
+	private int penUpPosition=50;
 
 	public int getLeftMotorStepPinNumber() {
 		return leftMotorStepPinNumber;

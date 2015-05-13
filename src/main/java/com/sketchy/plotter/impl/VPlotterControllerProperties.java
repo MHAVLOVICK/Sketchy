@@ -104,8 +104,8 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 
 	private double unitIncrement=0;
 	
-	private int moveSpeed=100;
-	private int drawSpeed=100;
+	private int moveSpeed=75;
+	private int drawSpeed=75;
 	
 	@Override
 	public double getFrameWidth() {

@@ -1,0 +1,80 @@
+<!-- 
+    Sketchy
+    Copyright (C) 2015 Matthew Havlovick
+    http://www.quickdrawbot.com
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Contact Info:
+
+Matt Havlovick
+QuickDraw
+470 I St
+Washougal, WA 98671
+
+matt@quickdrawbot.com
+http://www.quickdrawbot.com
+
+This General Public License does not permit incorporating your program into
+proprietary programs.  If your program is a subroutine library, you may
+consider it more useful to permit linking proprietary applications with the
+library.  If this is what you want to do, use the GNU Lesser General
+Public License instead of this License.
+
+ -->
+ 
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Raspberry PI Servo Controller</title>
+	</head>
+	
+	<body>
+		<h1>Raspberry PI Servo Controller</h1>
+
+		<h3>Left/Right Motor Properties</h3>
+		The default values should be correct if you are using a QuickDraw controller board and connected it according to the instructions.  
+		<br/><br/>
+		Use the "Motor Forward" and "Motor Backward" buttons to test the Left and Right Motors.  
+		<br/><br/>
+		If the motors are swapped (left/right), then you can either: shutdown and power off the QuickDraw and swap the connectors; or you can swap the pin numbers on this screen, but make sure to swap all pins correctly.
+		<br/><br/>
+		"Motor Forward" should extend the string, and "Motor Backward" should retract it. 
+		<br/><br/>
+		If "Motor Forward" retracts instead of extends, you can either: wind the pulleys in the opposite direction; or shutdown and power off the QuickDraw and reverse the connector(s); or you can select/deselect the "Invert Direction" check box for the motor(s).
+		<br/>
+		<br/>
+		<h3>Pen Properties</h3>
+		The default Servo Device Pipe and Pen Pin Number should be correct if you are using a QuickDraw controller board and connected it according to the instructions.
+		<br/><br/>
+		When calibrating the servo, the goal is to use the smallest amount of travel as needed for proper operation.  The servo should not meet any resistance other than what it takes to move the Pen.  Too much resistance can overheat or strip the gears on the servo!
+		<br/><br/>
+		Use the "Pen Up", "Pen Down", and "Cycle 5 Times" to test the servo operation. 
+		<br/><br/>		
+		The next four properties are critical for proper Pen servo Operation
+		<br/><br/>
+		<b>*** Quick and/or Repetitive movements of the servo can severely reduce it's lifespan! ***</b>
+		<br/><br/>
+		<b>Up Stable Period:</b> The amount of time (in milliseconds) to allow the pen to lift from the drawing surface before moving. 
+		<br/><br/>
+		<b>Down Stable Period:</b> The amount of time (in milliseconds) to allow the pen to return to the drawing surface before drawing.
+		<br/><br/>
+		<b>Pen Up Position:</b> The position of the servo to put the pen down.
+		<br/><br/>
+		<b>Pen Down Position:</b> The position of the servo to lift the pen up. 
+		
+	</body>
+</html>

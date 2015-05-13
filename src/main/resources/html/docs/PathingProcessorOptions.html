@@ -40,11 +40,116 @@ Public License instead of this License.
 	<head>
 		<meta charset="UTF-8">
 		<title>Pathing Options</title>
+		<style>
+			.bold {
+				font-weight: bold;
+				font-size: 18px;
+			}
+		</style>
 	</head>
 	
 	<body>
 		<div>
-			<img src="images/PathingProcessorOptions.png"/>
+			<h1>Pathing Processor</h1>
+			Pathing Processor Options can be selected to tell the processor in which order to search for adjacent pixels and other pathing behaviors.<br/><br/>
+			
+			<h2>Pattern</h2>
+			<table>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-FollowLeft.png"/></td>
+					<td valign="top">
+						<span class="bold">Follow Left</span><br/>
+						Checks for pixels 90 degrees left of the current direction of travel, continuing clockwise until a pixel is found to draw.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-FollowRight.png"/></td>
+					<td valign="top">
+						<span class="bold">Follow Right</span><br/>
+						Checks for pixels 90 degrees right of the current direction of travel, continuing counter-clockwise until a pixel is found to draw.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-Clockwise.png"/></td>
+					<td valign="top">
+						<span class="bold">Clockwise</span>
+					</td>
+				</tr>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-CounterClockwise.png"/></td>
+					<td valign="top">
+						<span class="bold">Counter Clockwise</span>
+					</td>	
+				</tr>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-UpperLeftToLowerRight.png"/></td>
+					<td valign="top">
+						<span class="bold">Upper Left To Lower Right</span>
+					</td>	
+				</tr>	
+				<tr>
+					<td><img src="images/PathingProcessorOptions-UpperRightToLowerLeft.png"/></td>
+					<td valign="top">
+						<span class="bold">Upper Right To Lower Left</span>
+					</td>	
+				</tr>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-LowerLeftToUpperRight.png"/></td>
+					<td valign="top">
+						<span class="bold">Lower Left To Upper Right</span>
+					</td>	
+				</tr>	
+				<tr>
+					<td><img src="images/PathingProcessorOptions-LowerRightToUpperLeft.png"/></td>
+					<td valign="top">
+						<span class="bold">Lower Right To Upper Left</span>
+					</td>	
+				</tr>
+				<tr>
+					<td><img src="images/PathingProcessorOptions-Random.png"/></td>
+					<td valign="top">
+						<span class="bold">Random</span>
+						Recommended for large filled in areas, otherwise <a href="http://en.wikipedia.org/wiki/Moir%C3%A9_pattern"/>moiré patterns</a> may occur. 
+					</td>	
+				</tr>																												
+			</table>
+			
+			<br/>
+			<h2>Direction Preference</h2>
+			<table>
+				<tr>
+					<td><span class="bold">No Direction Preference</span><br/>
+						Follows the Pattern defined above<br/><br/>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="bold">Prefer Same Direction</span><br/>
+						Follows the Pattern defined above, but prefers to draw in the same direction of travel<br/><br/>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="bold">Prefer Different Direction</span><br/>
+						Follows the Pattern defined above, but prefers to draw in a different direction of travel<br/><br/>
+					</td>
+				</tr>				
+			</table>
+			
+			<br/>
+			<h2>End of Line Behavior</h2>
+			<table>
+				<tr>	
+					<td><span class="bold">Backtrack (** Recommended **)</span><br/>
+						As pixels are drawn, they are stored in memory and when no adjacent pixels are found, retrace the line backwards checking for any other adjacent pixels.<br/><br/>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="bold">Lift Pen</span><br/>
+						Instead of backtracking, just lift the pen to the next pixel. May be beneficial with some image types, but typically lifts the pen excessively.<br/>
+						<br/>
+						WARNING: Rapid, repetitive pen lifts can burn out a servo!!
+					</td>
+				</tr>
+			</table>
 		</div>
 	</body>
 </html>

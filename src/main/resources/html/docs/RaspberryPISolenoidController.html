@@ -1,0 +1,82 @@
+<!-- 
+    Sketchy
+    Copyright (C) 2015 Matthew Havlovick
+    http://www.quickdrawbot.com
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Contact Info:
+
+Matt Havlovick
+QuickDraw
+470 I St
+Washougal, WA 98671
+
+matt@quickdrawbot.com
+http://www.quickdrawbot.com
+
+This General Public License does not permit incorporating your program into
+proprietary programs.  If your program is a subroutine library, you may
+consider it more useful to permit linking proprietary applications with the
+library.  If this is what you want to do, use the GNU Lesser General
+Public License instead of this License.
+
+ -->
+ 
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Raspberry PI Solenoid Controller</title>
+	</head>
+	
+	<body>
+		<h1>Raspberry PI Solenoid Controller</h1>
+
+		<h3>Left/Right Motor Properties</h3>
+		The default values should be correct if you are using a QuickDraw controller board and connected it according to the instructions.  
+		<br/><br/>
+		Use the "Motor Forward" and "Motor Backward" buttons to test the Left and Right Motors.  
+		<br/><br/>
+		If the motors are swapped (left/right), then you can either: shutdown and power off the QuickDraw and swap the connectors; or you can swap the pin numbers on this screen, but make sure to swap all pins correctly.
+		<br/><br/>
+		"Motor Forward" should extend the string, and "Motor Backward" should retract it. 
+		<br/><br/>
+		If "Motor Forward" retracts instead of extends, you can either: wind the pulleys in the opposite direction; or shutdown and power off the QuickDraw and reverse the connector(s); or you can select/deselect the "Invert Direction" check box for the motor(s).
+		<br/>
+		<br/>
+		<h3>Pen Properties</h3>
+		The default Pen Pin Number should be correct if you are using a QuickDraw controller board and connected it according to the instructions.
+		<br/><br/>
+		When calibrating the solenoid, the goal is to use the least amount of power and shortest "Pen Up" time as needed for proper operation.
+		<br/><br/>
+		Use the "Pen Up", "Pen Down", and "Cycle 5 Times" to test the Solenoid operation. 
+		<br/><br/>		
+		The next four properties are critical for proper Pen Solenoid Operation
+		<br/><br/>
+		<b>*** Improper Values can over heat and damage the Solenoid ***</b>
+		<br/><br/>
+		<b>*** NEVER ALLOW THE SOLENOID TO BE IN THE "PEN UP" (ENERGIZED) POSITION FOR LONGER THAN A COUPLE OF SECONDS!! ***</b>  
+		<br/><br/>
+		<b>Up Stable Period:</b> The amount of time (in milliseconds) to allow the pen to lift from the drawing surface before moving. 
+		<br/><br/>
+		<b>Down Stable Period:</b> The amount of time (in milliseconds) to allow the pen to return to the drawing surface before drawing.
+		<br/><br/>
+		<b>Power Level:</b> The initial power level applied to energize the solenoid during the pen lift.
+		<br/><br/>
+		<b>Hold Power Level:</b> The power level applied to the solenoid after the "Up Stable Period".  This is typically around 60% of the "Power Level" as once the pen is lifted, it takes less power to hold it there.
+		
+	</body>
+</html>
