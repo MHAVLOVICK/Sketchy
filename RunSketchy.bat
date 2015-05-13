@@ -1,1 +1,1 @@
-java -cp .;.\*;.\lib\* com.sketchy.server.HttpServer
+java -Xms384m -Xmx384m -cp .;.\*;.\lib\* com.sketchy.server.HttpServer
