@@ -77,6 +77,14 @@ public final class ImageUploadServlet extends HttpServlet {
 		    	for (FileItem fileItem:files){
 		    		String uploadFileName = fileItem.getName();
 		    		if (StringUtils.isNotBlank(uploadFileName)){
+		    			// Don't allow \\ in the filename, assume it's a directory separator and convert to "/"
+		    			// and take the filename after the last "/"
+		    			// This will fix the issue of Jetty not reading and serving files
+		    			// with "\" (%5C) characters 
+		    			// This also fixes the issue of IE sometimes sending the whole path 
+		    			// (depending on the security settings)
+		    			uploadFileName = StringUtils.replaceChars(uploadFileName, "\\", "/");
+		    			uploadFileName = StringUtils.substringAfterLast(uploadFileName, "/");
 		    			
 			    		File uploadFile = HttpServer.getUploadFile(uploadFileName);
 			    		// make sure filename is actually in the upload directory
