@@ -84,7 +84,9 @@ public final class ImageUploadServlet extends HttpServlet {
 		    			// This also fixes the issue of IE sometimes sending the whole path 
 		    			// (depending on the security settings)
 		    			uploadFileName = StringUtils.replaceChars(uploadFileName, "\\", "/");
-		    			uploadFileName = StringUtils.substringAfterLast(uploadFileName, "/");
+		    			if (StringUtils.contains(uploadFileName, "/")){
+		    				uploadFileName = StringUtils.substringAfterLast(uploadFileName, "/");
+		    			}
 		    			
 			    		File uploadFile = HttpServer.getUploadFile(uploadFileName);
 			    		// make sure filename is actually in the upload directory
