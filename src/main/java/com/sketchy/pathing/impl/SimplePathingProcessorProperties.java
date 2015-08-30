@@ -68,6 +68,8 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 		pathingPatternList.put(PathingPattern.UpperRightToLowerLeft.name(), PathingPattern.UpperRightToLowerLeft.label);
 		pathingPatternList.put(PathingPattern.LowerLeftToUpperRight.name(), PathingPattern.LowerLeftToUpperRight.label);
 		pathingPatternList.put(PathingPattern.LowerRightToUpperLeft.name(), PathingPattern.LowerRightToUpperLeft.label);
+		pathingPatternList.put(PathingPattern.PreferNonDiagonals.name(), PathingPattern.PreferNonDiagonals.label);
+		pathingPatternList.put(PathingPattern.SkipDiagonals.name(), PathingPattern.SkipDiagonals.label);		
 		pathingPatternList.put(PathingPattern.Random.name(), PathingPattern.Random.label);
 	}
 		
@@ -99,7 +101,7 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 		patternGroup.add(new MetaDataProperty("pathingPattern","Pattern",AttributeType.List, pathingPatternList));
 		patternGroup.add(new MetaDataProperty("pathingDirectionPreference","Direction Preference",AttributeType.List, pathingDirectionPreferenceList));
 		patternGroup.add(new MetaDataProperty("pathingBacktrackOption","End of Line Behavior",AttributeType.List, pathingBacktrackOptionList));
-
+		patternGroup.add(new MetaDataProperty("stripingLengthInMM", "Vertical Striping Length (MM)", AttributeType.Decimal, false));
 		metaData.add(patternGroup);
 		
 		return metaData;
@@ -108,6 +110,15 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 	private PathingPattern pathingPattern=PathingPattern.Random;
 	private PathingDirectionPreference pathingDirectionPreference=PathingDirectionPreference.NoPreference;
 	private PathingBacktrackOption pathingBacktrackOption = PathingBacktrackOption.Backtrack;
+	private double stripingLengthInMM=0;
+
+	public double getStripingLengthInMM() {
+		return stripingLengthInMM;
+	}
+
+	public void setStripingLengthInMM(double stripingLengthInMM) {
+		this.stripingLengthInMM = stripingLengthInMM;
+	}
 
 	public PathingPattern getPathingPattern() {
 		return pathingPattern;
@@ -117,26 +128,20 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 		this.pathingPattern = pathingPattern;
 	}
 
-
 	public PathingDirectionPreference getPathingDirectionPreference() {
 		return pathingDirectionPreference;
 	}
-
 
 	public void setPathingDirectionPreference(PathingDirectionPreference pathingDirectionPreference) {
 		this.pathingDirectionPreference = pathingDirectionPreference;
 	}
 
-
 	public PathingBacktrackOption getPathingBacktrackOption() {
 		return pathingBacktrackOption;
 	}
 
-
 	public void setPathingBacktrackOption(PathingBacktrackOption pathingBacktrackOption) {
 		this.pathingBacktrackOption = pathingBacktrackOption;
 	}
-	
-	
 	
 }

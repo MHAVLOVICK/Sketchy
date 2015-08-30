@@ -62,7 +62,9 @@ public class SimplePathingProcessor extends PathingProcessor {
 		UpperLeftToLowerRight("Upper Left to Lower Right", new int[]{7,0,6,1,5,2,4,3}),
 		UpperRightToLowerLeft("Upper Right to Lower Left", new int[]{1,0,2,7,3,6,4,5}),
 		LowerLeftToUpperRight("Lower Left to Upper Right", new int[]{5,4,6,3,7,2,0,1}),
-		LowerRightToUpperLeft("Lower Right to Upper Left", new int[]{3,4,2,5,1,6,0,7});
+		LowerRightToUpperLeft("Lower Right to Upper Left", new int[]{3,4,2,5,1,6,0,7}),
+		PreferNonDiagonals("Prefer Non-Diagonals", new int[]{0,2,4,6,1,3,5,7}),
+		SkipDiagonals("Skip Diagonals", new int[]{0,2,4,6,0,2,4,6});
 		
 		public String label="";
 		public int[] pattern=null;
@@ -204,12 +206,18 @@ public class SimplePathingProcessor extends PathingProcessor {
 		// return a bitmapArray for the provided portion of the image
 		boolean[][] bitmapArray = sketchyImage.toBooleanBitmapArray(x, y, width, height);
 		
-		//  A pixel is drawn twice, so count it twice
 		long totalCount = 0;
 		for (int yIdx=0;yIdx<bitmapArray[0].length;yIdx++){
 			for (int xIdx=0;xIdx<bitmapArray.length;xIdx++){
-				if (bitmapArray[xIdx][yIdx]==true) totalCount+=2;
+				if (bitmapArray[xIdx][yIdx]==true){
+					totalCount++;
+				}
 			}			
+		}
+		
+		if (properties.getPathingBacktrackOption().equals(PathingBacktrackOption.Backtrack)){
+			//  If backtracking then a pixel is drawn twice, so count it twice
+			totalCount*=2;
 		}
 		
 	    int xpos = 0;
@@ -218,10 +226,19 @@ public class SimplePathingProcessor extends PathingProcessor {
 	    statusMessage = "Drawing";
 	    int penLifts=0;
     	List<Point> history = new ArrayList<Point>(HISTORY_INITIAL_SIZE);
+    	int stripeLength = height-1;
+    	stripeLength=(int) (heightDotsPerMM*properties.getStripingLengthInMM());
+    	int maxY=stripeLength;
 		while(true){
 			if (cancel) break;
-			Point foundPoint = findNextPoint(bitmapArray, xpos, ypos);
-			if (foundPoint==null) break;
+			Point foundPoint = findNextPoint(bitmapArray, xpos, ypos, maxY);
+			if (foundPoint==null){
+				if ((stripeLength==0) || (maxY>=height)){
+					break;
+				}
+				maxY+=stripeLength;
+				continue;
+			}
 	    	
 	    	xpos = foundPoint.x;
 	    	ypos = foundPoint.y;
@@ -248,7 +265,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 	   	    	
 	   	    	Integer direction = null;
 	   	    	if (history.size()<HISTORY_LIMIT){
-	   	    		direction = getNextPixelDirection(bitmapArray, xpos, ypos, lastDirection);
+	   	    		direction = getNextPixelDirection(bitmapArray, xpos, ypos, lastDirection, maxY);
 	   	    	}
 	   	    	if (direction!=null){
 	   	    		count++;
@@ -274,7 +291,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 	   		    	SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos);
 	   	    	} else {
 	   	    		count++;
-	   	    		if ((count%500)==0){
+	   	    		if ((count%100)==0){
 	   	    			progress = (int) ((count/(double)totalCount) * 100);
 	   	    		}
 	   	    		
@@ -297,9 +314,8 @@ public class SimplePathingProcessor extends PathingProcessor {
 	   	    }
 		}
     }
-
     
-	private Point findNextPoint(boolean[][] bitmapArray, int xPos, int yPos){
+	private Point findNextPoint(boolean[][] bitmapArray, int xPos, int yPos, int maxY){
     	// does the current pixel happen to be set? typically only 0,0
     	// if so, just return
 		if (bitmapArray[xPos][yPos]) return new Point(xPos, yPos);
@@ -311,7 +327,13 @@ public class SimplePathingProcessor extends PathingProcessor {
     	int maxX=width-1;
     	
     	int minY=0;
-    	int maxY=height-1;
+    	
+    	if (maxY==0){
+    		maxY=height-1;	
+    	} else { // make sure maxY is still less than the height of the bitmapArray
+    		maxY=Math.min(maxY, height-1);
+    	}
+    	
         
 		for (int distanceFromCenter=1;distanceFromCenter<=Math.max(width, height);distanceFromCenter++){
     		for (int z=-distanceFromCenter;z<=distanceFromCenter;z++){
@@ -343,7 +365,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 		return null;
 	}
  	
-    public Integer getNextPixelDirection(boolean[][] bitmapArray, int x, int y, int lastDirection){
+    public Integer getNextPixelDirection(boolean[][] bitmapArray, int x, int y, int lastDirection, int maxY){
     	Integer ret = null;
     	
     	// get pattern
@@ -380,8 +402,15 @@ public class SimplePathingProcessor extends PathingProcessor {
     		Point point = getPointFromDirection(dir);
     		int testX = x+point.x;
     		int testY = y+point.y;
+
+    		if (maxY==0){
+        		maxY=bitmapArray[0].length;	
+        	} else { // make sure maxY is still less than the height of the bitmapArray
+        		maxY=Math.min(maxY, bitmapArray[0].length);
+        	}
+    		
     		if ((testX>=0) && (testX<bitmapArray.length) && 
-    			(testY>=0) && (testY<bitmapArray[0].length)){
+    			(testY>=0) && (testY<maxY)){
     			if (bitmapArray[testX][testY]){
     				if (properties.getPathingDirectionPreference()==PathingDirectionPreference.NoPreference){
     					ret=new Integer(dir);
