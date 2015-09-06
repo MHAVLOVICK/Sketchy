@@ -945,7 +945,6 @@ function updateRenderStatus() {
 		    		setTimeout('updateRenderStatus()',1000);
 				} else if (data.renderStatus==="ERROR"){ 
 					showError(data.renderMessage);
-		    		setTimeout('updateRenderStatus()',1000);
 				} else {
 					$("#dialog-render" ).dialog( "close" );
 					if (data.renderStatus==="CANCELLED"){

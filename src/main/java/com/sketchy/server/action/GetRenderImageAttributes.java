@@ -55,6 +55,7 @@ public class GetRenderImageAttributes extends ServletAction {
 		nf.setMaximumFractionDigits(5);
 		nf.setMinimumFractionDigits(0);
 		nf.setMinimumFractionDigits(1);
+		nf.setGroupingUsed(false);
 	}
 	
 	@Override
