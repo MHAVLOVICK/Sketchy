@@ -323,46 +323,6 @@ public class ImageProcessingThread extends Thread{
 		    g.drawImage(image, 0, 0, scaleWidth, scaleHeight, 0, 0, imageWidth, imageHeight, null); 
 		}
 	    g.dispose();
-		
-        //ImageIcon imageIcon = new ImageIcon(newImage);
-        //BufferedImage scaledImage = imageIcon.getImage();
-		
-		/*
-        int w = original.getWidth();
-        int h = original.getHeight();
-        AreaAveragingScaleFilter op = new AreaAveragingScaleFilter(scaleWidth, scaleHeight);
-        BufferedImage copy = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        AreaAveragingScaleFilter
-        
-        
-		
-		
-		
-		ImageProducer producer=new FilteredImageSource(image.getSource(), new AreaAveragingScaleFilter(scaleWidth, scaleHeight));
-		
-		Image newImage = Toolkit.getDefaultToolkit().createImage(producer);
-		
-		//new BufferedImage(outImage.getHeight(this), outImage.getWidth(this), BufferedImage.TYPE_INT_RGB);
-		//producer.
-		
-		//ImageProducer imageProducer = new AreaAveragingScaleFilter(scaleWidth, scaleHeight);
-		
-		//new FilteredImageSource(image, new AreaAveragingScaleFilter(scaleWidth, scaleHeight));
-		
-		//blueImg = createImage(new FilteredImageSource(img.getSource(), new ColorMaskFilter( Color.blue )));
-		/*
-		ImageConsumer
-		AreaAveragingScaleFilter scaleFilter = new AreaAveragingScaleFilter(100, 100)
-		scaleFilter.getFilterInstance(ic)
-		*/
-		
-
-		
-	    
-	    
-	    //g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-	    //g.drawImage(newImage, 0, 0, scaleWidth, scaleHeight, null);
-
 	    
 		int cropWidth = (int) Math.min(scaleWidth, drawingWidth);
 		int cropHeight = (int) Math.min(scaleHeight, drawingHeight);

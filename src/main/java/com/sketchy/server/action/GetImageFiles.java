@@ -39,6 +39,8 @@ package com.sketchy.server.action;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +67,14 @@ public class GetImageFiles extends ServletAction {
 				public boolean accept(File arg0, String filename) {
 					return (StringUtils.endsWithIgnoreCase(filename, ".dat") && 
 							(!StringUtils.endsWithIgnoreCase(filename, "rendered.dat")));
+				}
+			});
+	    	
+	    	Arrays.sort(files, new Comparator<File>() {
+				@Override
+				public int compare(File f1, File f2) {
+					if ((f1==null) || (f2==null)) return 0; // Shouldn't ever be null, but if so if either is null, then just return 0; 
+					return f1.getName().compareToIgnoreCase(f2.getName());
 				}
 			});
 	
