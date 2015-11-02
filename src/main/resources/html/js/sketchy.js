@@ -103,6 +103,10 @@ $( document ).ready(function() {
 		$("#advanced-upgrade-tab").click();
 	});
 	
+	$("#advanced-upgrade-tab").on("click", function(e){
+		loadUpgradeSettings();	
+	});
+	
 	$("#advanced-network-tab").on("click", function(e){
 		loadNetworkSettings();	
 	});
@@ -545,6 +549,11 @@ function jsonRequest(URL, method, jsonString, successCallback, errorCallback, ig
 }
 
 
+ $(function() {
+    $( document ).tooltip();
+ });
+
+
 /***** Hardware Settings Functions *****/
 
 function saveHardwareSettings() {
@@ -810,6 +819,12 @@ function populateDrawingSettings(data){
 	}
 }
 
+function loadUpgradeSettings() {
+	$("#currentVersion").val("");
+	jsonGetRequest("/servlet/GetCurrentVersion","", function(data){
+		$("#currentVersion").html(data.currentVersion);
+	});
+}
 
 function loadNetworkSettings() {
 	$("#networkSSID").val("");

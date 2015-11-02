@@ -90,6 +90,9 @@ public abstract class PlotterController {
 
 	public abstract void drawTo(double newXPos, double newYPos) throws Exception;
 	
+	public abstract void enableMotors() throws Exception;
+	public abstract void disableMotors() throws Exception;
+	
 	
 	@SuppressWarnings("unchecked")
 	public static Map<String, String> getPlotterControllerClassMap() throws Exception { 

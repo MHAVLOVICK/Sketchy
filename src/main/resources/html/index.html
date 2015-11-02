@@ -263,6 +263,8 @@ Public License instead of this License.
 					  		<table>
 								<tr valign="top">	
 					  				<td colspan="2">
+					  					Current Version: <span id="currentVersion"></span> 
+					  					<br/><br/>
 							 			<fieldset>
 							    			<legend>Select Upgrade File</legend>
 				   							<form id="uploadUpgradeform">
@@ -330,49 +332,57 @@ Public License instead of this License.
 		  			<input type="hidden" id="threshold" name="threshold"/>
 		  			
 		  			<br/>
-		  			Drawing Size: <select name="drawingSize" id="drawingSize"></select><br/><br/>
+		  			<span title="Drawing size">Drawing Size:</span> <select name="drawingSize" id="drawingSize"></select><br/><br/>
 		  			
-		  			Pen Width: <select style="width: 200px;" class="imageOption" id="penWidth" name="penWidth"></select><br/><br/>
+		  			<span title="Pen Width">Pen Width:</span> <select style="width: 200px;" class="imageOption" id="penWidth" name="penWidth"></select><br/><br/>
 		  			
 					<fieldset>
-						<legend>Render Options</legend>		  			
-						<input type="radio" class="imageOption" name="renderOption" value="RENDER_NORMAL" checked="checked"/>Normal &nbsp;
-						<input type="radio" class="imageOption" name="renderOption" value="RENDER_HALFTONE"/>Halftone &nbsp;
-						<input type="radio" class="imageOption" name="renderOption" value="RENDER_EDGE_DETECTION"/>Edge Detection &nbsp;
-						<input type="checkbox" class="imageOption" name="invertImage" value="true"/>Invert Image		  			
+						<legend title="Render Options">Render Options</legend>		  			
+						<input title="No special rendering. Best for line drawings" type="radio" class="imageOption" name="renderOption" value="RENDER_NORMAL" checked="checked"/>Normal &nbsp;
+						<input title="Halftone converts different intensities to dots of different densities. Ideal for Photos and best with the Solenoid Pen Holder" type="radio" class="imageOption" name="renderOption" value="RENDER_HALFTONE"/>Halftone &nbsp;
+						<input title="Attempts to convert images to line drawings. High contrast images work best" type="radio" class="imageOption" name="renderOption" value="RENDER_EDGE_DETECTION"/>Edge Detection &nbsp;
+						<input title="Inverts the image" type="checkbox" class="imageOption" name="invertImage" value="true"/>Invert Image		  			
 					</fieldset>
 					<br/>							  			
-					<fieldset>
+					<fieldset title="Center Options">
 					<legend>Center</legend>
-						<input type="radio" class="imageOption" name="centerOption" value="CENTER_BOTH" checked="checked"/>Both &nbsp;
-						<input type="radio" class="imageOption" name="centerOption" value="CENTER_HORIZONTAL"/>Horizontal &nbsp;
-						<input type="radio" class="imageOption" name="centerOption" value="CENTER_VERTICAL"/>Verticle &nbsp;
-						<input type="radio" class="imageOption" name="centerOption" value="CENTER_NONE"/>None
+						<input title="Draw the Image in the middle of drawing area" type="radio" class="imageOption" name="centerOption" value="CENTER_BOTH" checked="checked"/>Both &nbsp;
+						<input title="Draw the Image starting at the top of the drawing area, but centered horizontally" type="radio" class="imageOption" name="centerOption" value="CENTER_HORIZONTAL"/>Horizontal &nbsp;
+						<input title="Draw the Image starting at the left of the drawing area, but centered vertically" type="radio" class="imageOption" name="centerOption" value="CENTER_VERTICAL"/>Verticle &nbsp;
+						<input title="Draw the Image starting at the top left of the drawing area" type="radio" class="imageOption" name="centerOption" value="CENTER_NONE"/>None
 					</fieldset>
 					<br/>	
-					<fieldset>
+					<fieldset title="Rotate Options">
 					<legend>Rotate Image</legend>
-						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_NONE" checked="checked"/>None &nbsp;
-						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_90"/>90 Degrees &nbsp;
-						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_180"/>180 Degrees &nbsp;
-						<input type="radio" class="imageOption" name="rotateOption" value="ROTATE_270"/>270 Degrees
+						<input title="Don't rotate the image" type="radio" class="imageOption" name="rotateOption" value="ROTATE_NONE" checked="checked"/>None &nbsp;
+						<input title="Rotate Image clockwise 90 Degrees" type="radio" class="imageOption" name="rotateOption" value="ROTATE_90"/>90 Degrees &nbsp;
+						<input title="Rotate Image clockwise 180 Degrees" type="radio" class="imageOption" name="rotateOption" value="ROTATE_180"/>180 Degrees &nbsp;
+						<input title="Rotate Image clockwise 270 Degrees" type="radio" class="imageOption" name="rotateOption" value="ROTATE_270"/>270 Degrees
 					</fieldset>
 					<br/>	
 					<fieldset>
-					<legend>Flip Image</legend>
-						<input type="radio" class="imageOption" name="flipOption" value="FLIP_NONE" checked="checked"/>None &nbsp;
-						<input type="radio" class="imageOption" name="flipOption" value="FLIP_HORIZONTAL"/>Horizontal &nbsp;
-						<input type="radio" class="imageOption" name="flipOption" value="FLIP_VERTICAL"/>Vertical &nbsp;
-						<input type="radio" class="imageOption" name="flipOption" value="FLIP_BOTH"/>Both
+					<legend title="Flip Image Options">Flip Image</legend>
+						<input title="Don't flip the image."  type="radio" class="imageOption" name="flipOption" value="FLIP_NONE" checked="checked"/>None &nbsp;
+						<input title="Flip Image from Left to Right. Good for Window Drawings" type="radio" class="imageOption" name="flipOption" value="FLIP_HORIZONTAL"/>Horizontal &nbsp;
+						<input title="Flip Image from Top to Bottom" type="radio" class="imageOption" name="flipOption" value="FLIP_VERTICAL"/>Vertical &nbsp;
+						<input title="Flip Image Both Ways" type="radio" class="imageOption" name="flipOption" value="FLIP_BOTH"/>Both
 					</fieldset>
 					<br/>
-					Contrast: <span id="contrastValue">50</span>
+					<fieldset>
+					<legend title="Scale Options">Scale Method</legend>
+						<input title="Bicubic" type="radio" class="imageOption" name="scaleOption" value="SCALE_BICUBIC" checked="checked"/>Bicubic &nbsp;
+						<input title="Bilinear" type="radio" class="imageOption" name="scaleOption" value="SCALE_BILINEAR"/>Bilinear &nbsp;
+						<input title="Nearest Neighbor" type="radio" class="imageOption" name="scaleOption" value="SCALE_NEAREST_NEIGHBOR"/>Nearest Neighbor &nbsp;
+						<input title="Area Averaging. Note: When using larger pen widths and the Threshold may also need to be reduced" type="radio" class="imageOption" name="scaleOption" value="SCALE_AREA_AVERAGING"/>Area Averaging
+					</fieldset>
+					<br/>					
+					<span title="Adjusts the Contrast of the image prior to evaluating all other options">Contrast:</span> <span id="contrastValue">50</span>
 					<div id="contrastSlider"></div>
 					<br/>
-					Brightness: <span id="brightnessValue">50</span>
+					<span title="Adjusts the Brightness of the image prior to evaluating all other options">Brightness:</span> <span id="brightnessValue">50</span>
 					<div id="brightnessSlider"></div>
 					<br/>	
-					Threshold: <span id="thresholdValue">50</span>
+					<span title="Determines how dark a pixel needs to be to be drawn. Evaluated after all other options">Threshold:</span> <span id="thresholdValue">50</span>
 					<div id="thresholdSlider"></div>
 					<br/>
 				</form>

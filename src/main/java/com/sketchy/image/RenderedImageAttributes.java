@@ -53,6 +53,10 @@ public class RenderedImageAttributes extends ImageAttributes{
 	public enum CenterOption{
 		CENTER_NONE, CENTER_HORIZONTAL, CENTER_VERTICAL, CENTER_BOTH
 	};
+	
+	public enum ScaleOption{
+		SCALE_BILINEAR, SCALE_BICUBIC, SCALE_NEAREST_NEIGHBOR, SCALE_AREA_AVERAGING
+	};
 
 	
 	private String sourceImageName;
@@ -60,6 +64,8 @@ public class RenderedImageAttributes extends ImageAttributes{
 	private RotateOption rotateOption=RotateOption.ROTATE_NONE;
 	
 	private RenderOption renderOption=RenderOption.RENDER_NORMAL;
+	
+	private ScaleOption scaleOption=ScaleOption.SCALE_BICUBIC;
 	
 	private FlipOption flipOption = FlipOption.FLIP_NONE;
 	
@@ -164,6 +170,14 @@ public class RenderedImageAttributes extends ImageAttributes{
 
 	public void setInvertImage(boolean invertImage) {
 		this.invertImage = invertImage;
+	}
+
+	public ScaleOption getScaleOption() {
+		return scaleOption;
+	}
+
+	public void setScaleOption(ScaleOption scaleOption) {
+		this.scaleOption = scaleOption;
 	}
 	
 }

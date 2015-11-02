@@ -150,8 +150,12 @@ public class SimplePathingProcessor extends PathingProcessor {
 			cancel=false;
 			paused=false;
 			progress=0;
+	    	SketchyContext.plotterController.enableMotors();
 			processImage(sketchyImage);
 			SketchyContext.plotterController.home();
+			if (SketchyContext.plotterControllerProperties.isDisableMotors()){
+				SketchyContext.plotterController.disableMotors();
+			}
 		    status = Status.COMPLETED;
 		} catch (Exception e){
 			status = Status.ERROR;
@@ -403,32 +407,29 @@ public class SimplePathingProcessor extends PathingProcessor {
     		int testX = x+point.x;
     		int testY = y+point.y;
 
-    		if (maxY==0){
-        		maxY=bitmapArray[0].length;	
-        	} else { // make sure maxY is still less than the height of the bitmapArray
-        		maxY=Math.min(maxY, bitmapArray[0].length);
-        	}
-    		
-    		if ((testX>=0) && (testX<bitmapArray.length) && 
-    			(testY>=0) && (testY<maxY)){
-    			if (bitmapArray[testX][testY]){
-    				if (properties.getPathingDirectionPreference()==PathingDirectionPreference.NoPreference){
-    					ret=new Integer(dir);
-    					break; // or just break when you find a pixel, regardless of last travel direction
-    				} else if ((properties.getPathingDirectionPreference()==PathingDirectionPreference.DifferentDirection) && 
-    					(idx!=lastDirection)){
-    					ret=new Integer(dir);
-        				break; // exit out.. we found what we were looking for
-    				} else if ((properties.getPathingDirectionPreference()==PathingDirectionPreference.SameDirection) && 
-    					(idx==lastDirection)){
-    					ret=new Integer(dir);
-    					break; // exit out.. we found a 
-    				} else {
-    	    	    	if (ret==null){ // if the return direction hasn't been set yet.. then set it here
-    	    	    		ret=new Integer(dir);
-    	    	    	}
-    				}
-    			}
+
+    		if ((maxY<=0) || (testY<=maxY) || (getPointFromDirection(dir).y<1)){
+	    		if ((testX>=0) && (testX<bitmapArray.length) && 
+	    			(testY>=0) && (testY<bitmapArray[0].length)){
+	    			if (bitmapArray[testX][testY]){
+	    				if (properties.getPathingDirectionPreference()==PathingDirectionPreference.NoPreference){
+	    					ret=new Integer(dir);
+	    					break; // or just break when you find a pixel, regardless of last travel direction
+	    				} else if ((properties.getPathingDirectionPreference()==PathingDirectionPreference.DifferentDirection) && 
+	    					(idx!=lastDirection)){
+	    					ret=new Integer(dir);
+	        				break; // exit out.. we found what we were looking for
+	    				} else if ((properties.getPathingDirectionPreference()==PathingDirectionPreference.SameDirection) && 
+	    					(idx==lastDirection)){
+	    					ret=new Integer(dir);
+	    					break; // exit out.. we found a 
+	    				} else {
+	    	    	    	if (ret==null){ // if the return direction hasn't been set yet.. then set it here
+	    	    	    		ret=new Integer(dir);
+	    	    	    	}
+	    				}
+	    			}
+	    		}
     		}
     	}
     	return ret;

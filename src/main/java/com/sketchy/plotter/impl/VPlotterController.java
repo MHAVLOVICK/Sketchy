@@ -129,6 +129,16 @@ public class VPlotterController extends PlotterController {
 	    return new Point2D.Double(xPos+canvasLeftPos, yPos+canvasTopPos);
 	}
 	
+	@Override
+	public void enableMotors() throws Exception {
+		SketchyContext.hardwareController.enableMotors();
+	}
+	
+	@Override
+	public void disableMotors() throws Exception {
+		SketchyContext.hardwareController.disableMotors();
+	}
+
 	public synchronized void home() throws Exception {
 		penUp();
 		moveMotorsTo(homeXPos, homeYPos, properties.getMoveDelayInMicroSeconds());

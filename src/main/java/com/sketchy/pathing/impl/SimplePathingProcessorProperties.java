@@ -95,7 +95,7 @@ public class SimplePathingProcessorProperties extends PathingProcessorProperties
 		
 		MetaData metaData = new MetaData();
 		
-		metaData.setHelpUrl("/docs/PathingProcessorOptions.html");
+		metaData.setHelpUrl("/docs/SimplePathingProcessorOptions.html");
 		
 		MetaDataGroup patternGroup = new MetaDataGroup("Pathing Logic");
 		patternGroup.add(new MetaDataProperty("pathingPattern","Pattern",AttributeType.List, pathingPatternList));

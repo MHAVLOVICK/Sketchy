@@ -73,8 +73,9 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 		MetaDataGroup motors = new MetaDataGroup("Motors");
 		motors.add(new MetaDataProperty("leftMotorStepsPerMM","Left Motor Steps/MM",AttributeType.Decimal,true));
 		motors.add(new MetaDataProperty("rightMotorStepsPerMM","Right Motor Steps/MM",AttributeType.Decimal,true));
-		motors.add(new MetaDataProperty("moveSpeed","Motor Move Speed (MM/Sec)",AttributeType.Number,true));
 		motors.add(new MetaDataProperty("drawSpeed","Motor Draw Speed (MM/Sec)",AttributeType.Number,true));
+		motors.add(new MetaDataProperty("moveSpeed","Motor Move Speed (MM/Sec)",AttributeType.Number,true));
+		motors.add(new MetaDataProperty("disableMotors","Disable Motors after drawing?",AttributeType.Boolean,false));
 		metaData.add(motors);
 		
 
@@ -106,6 +107,8 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 	
 	private int moveSpeed=75;
 	private int drawSpeed=75;
+	
+	private boolean disableMotors=false;
 	
 	@Override
 	public double getFrameWidth() {
@@ -212,4 +215,12 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 		this.drawSpeed = drawSpeed;
 	}
 
+	public boolean isDisableMotors() {
+		return disableMotors;
+	}
+
+	public void setDisableMotors(boolean disableMotors) {
+		this.disableMotors = disableMotors;
+	}
+	
 }

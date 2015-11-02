@@ -1,4 +1,4 @@
-/*
+<!-- 
     Sketchy
     Copyright (C) 2015 Matthew Havlovick
     http://www.quickdrawbot.com
@@ -32,30 +32,33 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-*/
 
-package com.sketchy.plotter;
-
-import com.sketchy.metadata.MetaDataObject;
-
-public abstract class PlotterControllerProperties extends MetaDataObject {
-
-	private static final long serialVersionUID = -1745060855974275688L;
-
-	public abstract Class<? extends PlotterController> getImplementationClass();
-
-	public abstract double getFrameWidth();
-	public abstract double getFrameHeight();
-	public abstract double getCanvasWidth();
-	public abstract double getCanvasHeight();
+ -->
+ 
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Pathing Options</title>
+		<style>
+			.bold {
+				font-weight: bold;
+				font-size: 18px;
+			}
+		</style>
+	</head>
 	
-	public abstract int getDrawSpeed();
-	public abstract int getMoveSpeed();
-	
-	public abstract void setDrawSpeed(int drawSpeed);
-	public abstract void setMoveSpeed(int moveSpeed);
-	
-	public abstract boolean isDisableMotors();
-	public abstract void setDisableMotors(boolean disable);
-	
-}
+	<body>
+		<div>
+			<h1>Dot Matrix Pathing Processor</h1>
+			
+			The Dot Matrix Pathing Processor is primarily meant to be used for halftone, dithered, and/or stippled drawings where dot size consistency is required.<br/><br/> 
+			
+			This pathing processor just looks for the next closest pixel to be drawn and lifts and drops the pen for each individual pixel to be drawn<br/><br/>
+			
+			There are no options for the Dot Matrix Pathing Processor. <br/><br/>
+			
+			WARNING: This processor should not be used with the Servo Pen Holder as the rapid, repetitive pen lifts can burn out the servo. 
+		</div>
+	</body>
+</html>

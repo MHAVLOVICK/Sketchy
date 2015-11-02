@@ -34,28 +34,36 @@ library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 */
 
-package com.sketchy.plotter;
+package com.sketchy.pathing.impl;
 
-import com.sketchy.metadata.MetaDataObject;
 
-public abstract class PlotterControllerProperties extends MetaDataObject {
+import com.sketchy.metadata.MetaData;
 
-	private static final long serialVersionUID = -1745060855974275688L;
+import com.sketchy.pathing.PathingProcessor;
+import com.sketchy.pathing.PathingProcessorProperties;
 
-	public abstract Class<? extends PlotterController> getImplementationClass();
 
-	public abstract double getFrameWidth();
-	public abstract double getFrameHeight();
-	public abstract double getCanvasWidth();
-	public abstract double getCanvasHeight();
+public class DotMatrixPathingProcessorProperties extends PathingProcessorProperties {
 	
-	public abstract int getDrawSpeed();
-	public abstract int getMoveSpeed();
+	private static final long serialVersionUID = -2722385158493064636L;
 	
-	public abstract void setDrawSpeed(int drawSpeed);
-	public abstract void setMoveSpeed(int moveSpeed);
+	@Override
+	public Class<? extends PathingProcessor> getImplementationClass() {
+		return DotMatrixPathingProcessor.class; 
+	}
 	
-	public abstract boolean isDisableMotors();
-	public abstract void setDisableMotors(boolean disable);
 	
+	@Override	
+	public MetaData getMetaData() {
+		
+		MetaData metaData = new MetaData();
+		
+		metaData.setHelpUrl("/docs/DotMatrixPathingProcessorOptions.html");
+		
+		//MetaDataGroup patternGroup = new MetaDataGroup("Pathing Logic");
+		//metaData.add(patternGroup);
+		
+		return metaData;
+	}
+
 }

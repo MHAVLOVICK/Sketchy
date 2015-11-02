@@ -37,8 +37,13 @@ Public License instead of this License.
 package com.sketchy.image;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageProducer;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -55,6 +60,7 @@ import com.sketchy.image.RenderedImageAttributes.CenterOption;
 import com.sketchy.image.RenderedImageAttributes.FlipOption;
 import com.sketchy.image.RenderedImageAttributes.RenderOption;
 import com.sketchy.image.RenderedImageAttributes.RotateOption;
+import com.sketchy.image.RenderedImageAttributes.ScaleOption;
 import com.sketchy.server.HttpServer;
 import com.sketchy.utils.image.SketchyImage;
 
@@ -111,23 +117,9 @@ public class ImageProcessingThread extends Thread{
 			if (cancel){
 				throw new CancelledException();
 			}
-			progress=25;
-			if ((renderedImageAttributes.isInvertImage())){
-				statusMessage = "Inverting Image";
-				MarvinImage image = new MarvinImage(bufferedImage);
-				MarvinImagePlugin plugin = MarvinPluginLoader.loadImagePlugin("org.marvinproject.image.color.invert.jar");
-				if (plugin==null){
-					throw new Exception("Error loading Marvin Invert Image Plugin!");
-				}
-				plugin.process(image,image,null,MarvinImageMask.NULL_MASK, false);
-				image.update();
-				bufferedImage = image.getBufferedImage();
-			}
 			
-			if (cancel){
-				throw new CancelledException();
-			}
-			progress=30;
+			progress=25;
+			
 			if ((renderedImageAttributes.getBrightness()!=50) || (renderedImageAttributes.getContrast()!=50)){
 				statusMessage = "Adjusting Contrast/Brightness";
 				MarvinImage image = new MarvinImage(bufferedImage);
@@ -140,6 +132,23 @@ public class ImageProcessingThread extends Thread{
 				int contrastValue = (int)(renderedImageAttributes.getContrast()*2.54)-127;
 				plugin.setAttribute("brightness", brightnessValue);
 				plugin.setAttribute("contrast", contrastValue);
+				plugin.process(image,image,null,MarvinImageMask.NULL_MASK, false);
+				image.update();
+				bufferedImage = image.getBufferedImage();
+			}
+			
+			if (cancel){
+				throw new CancelledException();
+			}			
+			
+			progress=30;
+			if ((renderedImageAttributes.isInvertImage())){
+				statusMessage = "Inverting Image";
+				MarvinImage image = new MarvinImage(bufferedImage);
+				MarvinImagePlugin plugin = MarvinPluginLoader.loadImagePlugin("org.marvinproject.image.color.invert.jar");
+				if (plugin==null){
+					throw new Exception("Error loading Marvin Invert Image Plugin!");
+				}
 				plugin.process(image,image,null,MarvinImageMask.NULL_MASK, false);
 				image.update();
 				bufferedImage = image.getBufferedImage();
@@ -191,7 +200,7 @@ public class ImageProcessingThread extends Thread{
 			
 			progress=55;
 			statusMessage = "Scaling Image";
-			bufferedImage = resizeImage(bufferedImage, drawingWidth, drawingHeight, renderedImageAttributes.getCenterOption()); 
+			bufferedImage = resizeImage(bufferedImage, drawingWidth, drawingHeight, renderedImageAttributes.getCenterOption(), renderedImageAttributes.getScaleOption()); 
 
 			if (cancel){
 				throw new CancelledException();
@@ -284,7 +293,7 @@ public class ImageProcessingThread extends Thread{
 		}
 	}
 	
-	public static BufferedImage resizeImage(BufferedImage image, int drawingWidth, int drawingHeight, CenterOption centerOption){
+	public static BufferedImage resizeImage(BufferedImage image, int drawingWidth, int drawingHeight, CenterOption centerOption, ScaleOption scaleOption){
 
 		int imageWidth=image.getWidth();
 		int imageHeight=image.getHeight();
@@ -297,11 +306,63 @@ public class ImageProcessingThread extends Thread{
 		int scaleHeight=(int) (imageHeight*scale); 
 		
 		BufferedImage resizedImage = new BufferedImage(scaleWidth, scaleHeight, BufferedImage.TYPE_INT_ARGB);
-		
 	    Graphics2D g = resizedImage.createGraphics();
-	    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-	    g.drawImage(image, 0, 0, scaleWidth, scaleHeight, 0, 0, imageWidth, imageHeight, null); 
+	    
+		if (scaleOption==ScaleOption.SCALE_AREA_AVERAGING){
+			ImageProducer prod = new FilteredImageSource(image.getSource(), new AreaAveragingScaleFilter(scaleWidth, scaleHeight));
+			Image img = Toolkit.getDefaultToolkit().createImage(prod);
+		    g.drawImage(img, 0, 0, scaleWidth, scaleHeight, null);  // it's already scaled
+		} else {
+			if (scaleOption==ScaleOption.SCALE_NEAREST_NEIGHBOR) {
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);	
+			} else if (scaleOption==ScaleOption.SCALE_BICUBIC) {
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			} else if (scaleOption==ScaleOption.SCALE_BILINEAR) {
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			}
+		    g.drawImage(image, 0, 0, scaleWidth, scaleHeight, 0, 0, imageWidth, imageHeight, null); 
+		}
 	    g.dispose();
+		
+        //ImageIcon imageIcon = new ImageIcon(newImage);
+        //BufferedImage scaledImage = imageIcon.getImage();
+		
+		/*
+        int w = original.getWidth();
+        int h = original.getHeight();
+        AreaAveragingScaleFilter op = new AreaAveragingScaleFilter(scaleWidth, scaleHeight);
+        BufferedImage copy = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        AreaAveragingScaleFilter
+        
+        
+		
+		
+		
+		ImageProducer producer=new FilteredImageSource(image.getSource(), new AreaAveragingScaleFilter(scaleWidth, scaleHeight));
+		
+		Image newImage = Toolkit.getDefaultToolkit().createImage(producer);
+		
+		//new BufferedImage(outImage.getHeight(this), outImage.getWidth(this), BufferedImage.TYPE_INT_RGB);
+		//producer.
+		
+		//ImageProducer imageProducer = new AreaAveragingScaleFilter(scaleWidth, scaleHeight);
+		
+		//new FilteredImageSource(image, new AreaAveragingScaleFilter(scaleWidth, scaleHeight));
+		
+		//blueImg = createImage(new FilteredImageSource(img.getSource(), new ColorMaskFilter( Color.blue )));
+		/*
+		ImageConsumer
+		AreaAveragingScaleFilter scaleFilter = new AreaAveragingScaleFilter(100, 100)
+		scaleFilter.getFilterInstance(ic)
+		*/
+		
+
+		
+	    
+	    
+	    //g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+	    //g.drawImage(newImage, 0, 0, scaleWidth, scaleHeight, null);
+
 	    
 		int cropWidth = (int) Math.min(scaleWidth, drawingWidth);
 		int cropHeight = (int) Math.min(scaleHeight, drawingHeight);
