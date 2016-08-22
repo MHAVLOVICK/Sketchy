@@ -101,7 +101,9 @@ public class RaspberryPISolenoidController extends HardwareController {
 			} else {
 				Gpio.digitalWrite(properties.getLeftMotorDirectionPinNumber(), false);
 			}
+			Gpio.delayMicroseconds(2);
 			Gpio.digitalWrite(properties.getLeftMotorStepPinNumber(), true);
+			Gpio.delayMicroseconds(2);
 			Gpio.digitalWrite(properties.getLeftMotorStepPinNumber(), false);
 		}
 
@@ -111,7 +113,9 @@ public class RaspberryPISolenoidController extends HardwareController {
 			} else {
 				Gpio.digitalWrite(properties.getRightMotorDirectionPinNumber(), false);
 			}
+			Gpio.delayMicroseconds(2);
 			Gpio.digitalWrite(properties.getRightMotorStepPinNumber(), true);
+			Gpio.delayMicroseconds(2);
 			Gpio.digitalWrite(properties.getRightMotorStepPinNumber(), false);
 		}
 		
