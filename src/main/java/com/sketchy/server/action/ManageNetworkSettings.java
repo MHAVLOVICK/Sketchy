@@ -53,30 +53,19 @@ import com.sketchy.utils.JSONUtils;
 
 public class ManageNetworkSettings extends ServletAction {
 	
-	private static File INTERFACES_FILE = new File("/etc/network/interfaces");
-	
-	private static final List<String> REMOVE_LINES_LIST = new ArrayList<String>();
-	static{
-		REMOVE_LINES_LIST.add("iface wlan0 inet");
-		REMOVE_LINES_LIST.add("auto wlan0");
-		REMOVE_LINES_LIST.add("allow-hotplug wlan0");
-		REMOVE_LINES_LIST.add("wpa-ssid");
-		REMOVE_LINES_LIST.add("wpa-psk");
-		REMOVE_LINES_LIST.add("wpa-roam");
-		REMOVE_LINES_LIST.add("iface default inet dhcp");
-	}
-	
+	private static File WPA_SUPPLICANT_FILE = new File("/etc/wpa_supplicant/wpa_supplicant.conf");
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONServletResult execute(HttpServletRequest request) throws Exception {
 		JSONServletResult jsonServletResult = new JSONServletResult(Status.SUCCESS);
 		try{
-			if ((!INTERFACES_FILE.isFile()) || (!INTERFACES_FILE.exists())){
-				throw new Exception("Can not update Network Settings! File '" + INTERFACES_FILE.getPath() + "' not found.");
+			if ((!WPA_SUPPLICANT_FILE.isFile()) || (!WPA_SUPPLICANT_FILE.exists())){
+				throw new Exception("Can not update wpa_supplicant.conf file! File '" + WPA_SUPPLICANT_FILE.getPath() + "' not found.");
 			}
 			
-			if (!INTERFACES_FILE.canWrite()){
-				throw new Exception("Can not update Network Settings! Can not write to File '" + INTERFACES_FILE.getPath() + "'.");
+			if (!WPA_SUPPLICANT_FILE.canWrite()){
+				throw new Exception("Can not update Network Settings! Can not write to File '" + WPA_SUPPLICANT_FILE.getPath() + "'.");
 			}
 			
 			String responseBody = getResponseBody(request);
@@ -100,11 +89,11 @@ public class ManageNetworkSettings extends ServletAction {
 	private NetworkInfo readNetworkInfo() throws Exception {
 		NetworkInfo networkInfo = new NetworkInfo();
 		
-		List<String> lines = FileUtils.readLines(INTERFACES_FILE);
+		List<String> lines = FileUtils.readLines(WPA_SUPPLICANT_FILE);
 		
 		for (String line:lines){
-			String ssid = StringUtils.substringAfter(line, "wpa-ssid");
-			String psk = StringUtils.substringAfter(line, "wpa-psk");
+			String ssid = StringUtils.substringAfter(line, "ssid=");
+			String psk = StringUtils.substringAfter(line, "psk=");
 			if (StringUtils.isNotBlank(ssid)){
 				networkInfo.ssid=StringUtils.substringBetween(ssid, "\"", "\"");
 			}
@@ -117,43 +106,21 @@ public class ManageNetworkSettings extends ServletAction {
 	
 	public void updateNetworkInfo(NetworkInfo networkInfo) throws Exception {
 		
-		List<String> lines = FileUtils.readLines(INTERFACES_FILE);
+		List<String> lines = FileUtils.readLines(WPA_SUPPLICANT_FILE);
 		
 		List<String> newLines = new ArrayList<String>();
-		
-		// remove everything related to wlan0 and rebuild it
-		// keep everything else
-		
+
 		for (String line:lines){
 			
-			String normalizedLine=StringUtils.lowerCase(StringUtils.normalizeSpace(line));
-			
-			if (StringUtils.isNotBlank(normalizedLine)){
-			
-				boolean keepLine=true;
-				for (String removeString:REMOVE_LINES_LIST){
-					if (StringUtils.trim(normalizedLine).contains(removeString)){
-						keepLine=false;
-						break;
-					}
-				}
-				if (keepLine){
-					newLines.add(line);
-				}
+			if (StringUtils.containsIgnoreCase(line, "ssid=\"")){
+				line="\tssid=\"" + networkInfo.ssid + "\"";
+			} else if (StringUtils.containsIgnoreCase(line, "psk=\"")){
+				line="\tpsk=\"" + networkInfo.password + "\"";
 			}
+			newLines.add(line);
 		}
-		
-		// now build new WPA Lines
-		newLines.add("");
-		newLines.add("allow-hotplug wlan0");
-		newLines.add("auto wlan0");
-		newLines.add("");
-		newLines.add("iface wlan0 inet dhcp");
-		newLines.add("wpa-ssid \"" + networkInfo.ssid + "\"");
-		newLines.add("wpa-psk \"" + networkInfo.password + "\"");
-		
-		FileUtils.writeLines(INTERFACES_FILE, newLines);
-		
+
+		FileUtils.writeLines(WPA_SUPPLICANT_FILE, newLines);
 	}
 	
 	public class NetworkInfo {
