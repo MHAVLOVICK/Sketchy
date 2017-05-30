@@ -68,12 +68,18 @@ public class VPlotterController extends PlotterController {
 	private double homeXPos; // relativeToCanvasArea
 	private double homeYPos; 
 		
-	private double currentXPos=0;
-	private double currentYPos=0;
+	private double currentFrontXPos=0;
+	private double currentFrontYPos=0;
 	
-	private int leftMotorStepNumber=0;
-	private int rightMotorStepNumber=0;
+	private double currentBackXPos=0;
+	private double currentBackYPos=0;
 	
+	private int frontLeftMotorStepNumber=0;
+	private int frontRightMotorStepNumber=0;
+	
+	private int backLeftMotorStepNumber=0;
+	private int backRightMotorStepNumber=0;
+
 	private double unitIncrement=0;
 
 
@@ -92,7 +98,7 @@ public class VPlotterController extends PlotterController {
 		// set homeXPos to the center of the canvas area
 		// set homeYPos to the canvasTopPosition
 		homeXPos = (canvasWidth/2); 
-		homeYPos = properties.getYPosOffset();
+		homeYPos = properties.getyPosOffset();
 
 	    // *** Future Use *** 
 		// based on the recommended QuickDraw configuration, the unitIncrement should be about double
@@ -105,101 +111,86 @@ public class VPlotterController extends PlotterController {
 
 	// This method is called when the pen is "Home" to initialize the current position to the home values 
 	public void resetCurrentPositionToHome(){
-	    currentXPos=homeXPos;
-	    currentYPos=homeYPos;
+	    currentFrontXPos=homeXPos;
+	    currentFrontYPos=homeYPos;
+
+	    currentBackXPos=homeXPos;
+	    currentBackYPos=homeYPos;
+	    
+	    // Set stepNumbers
+	    double frontLeftMotorLength = getLeftMotorLength(currentFrontXPos, currentFrontYPos);
+	    double frontRightMotorLength = getRightMotorLength(currentFrontXPos, currentFrontYPos);
 
 	    // Set stepNumbers
-	    double leftMotorLength = getLeftMotorLength(currentXPos, currentYPos);
-	    double rightMotorLength = getRightMotorLength(currentXPos, currentYPos);
-
+	    double backLeftMotorLength = getLeftMotorLength(currentBackXPos, currentBackYPos);
+	    double backRightMotorLength = getRightMotorLength(currentBackXPos, currentBackYPos);
+	    
 	    // convert motor lengths to steps
-	    leftMotorStepNumber = getLeftMotorStepNumber(leftMotorLength);
-	    rightMotorStepNumber = getRightMotorStepNumber(rightMotorLength);
+	    frontLeftMotorStepNumber = getFrontLeftMotorStepNumber(frontLeftMotorLength);
+	    frontRightMotorStepNumber = getFrontRightMotorStepNumber(frontRightMotorLength);
+
+	    backLeftMotorStepNumber = getBackLeftMotorStepNumber(backLeftMotorLength);
+	    backRightMotorStepNumber = getBackRightMotorStepNumber(backRightMotorLength);
 	}
 
 	public void shutDown(){
-	}
-	    
-	public synchronized void penUp(){
-		 SketchyContext.hardwareController.penUp();
-	}
-	
-	public synchronized void penDown(){
-		 SketchyContext.hardwareController.penDown();
 	}
 	
 	private Point2D.Double getAbsolutePoint(double xPos, double yPos){
 	    return new Point2D.Double(xPos+canvasLeftPos, yPos+canvasTopPos);
 	}
-	
-	@Override
-	public void enableMotors() throws Exception {
-		SketchyContext.hardwareController.enableMotors();
-	}
-	
-	@Override
-	public void disableMotors() throws Exception {
-		SketchyContext.hardwareController.disableMotors();
-	}
 
 	public synchronized void home() throws Exception {
-		penUp();
-		moveMotorsTo(homeXPos, homeYPos, properties.getMoveDelayInMicroSeconds());
-		penDown();
+		moveMotorsTo(homeXPos, homeYPos, homeXPos, homeYPos, properties.getMoveDelayInMicroSeconds());
 	}
 	    
-	
-	public synchronized void moveTo(double newXPos, double newYPos) throws Exception {
-		penUp();
-		moveMotorsTo(newXPos, newYPos, properties.getMoveDelayInMicroSeconds());
+	@Override
+	public synchronized void moveTo(double newFrontXPos, double newFrontYPos, double newBackXPos, double newBackYPos) throws Exception {
+		moveMotorsTo(newFrontXPos, newFrontYPos, newBackXPos, newBackYPos, properties.getMoveDelayInMicroSeconds());
 		
-		currentXPos=newXPos;
-	    currentYPos=newYPos;
+		currentFrontXPos=newFrontXPos;
+	    currentFrontYPos=newFrontYPos;
+
+	    currentBackXPos=newBackXPos;
+	    currentBackYPos=newBackYPos;
 	}
 	
-	public synchronized void drawTo(double newXPos, double newYPos) throws Exception {
+	@Override
+	public synchronized void drawTo(double newFrontXPos, double newFrontYPos, double newBackXPos, double newBackYPos) throws Exception {
 		//double unitIncrement = properties.getUnitIncrement();
 		
 		long drawDelayInMicroSeconds = properties.getDrawDelayInMicroSeconds();
-		double tensionFactor=properties.getTensionFactor();
-
-		penDown();
-
+	
 		if (unitIncrement<=0){
 			long delay=drawDelayInMicroSeconds;
-			if (tensionFactor>0){
-				double minTension = (1-Math.min(getLeftStringTension(newXPos, newYPos),getRightStringTension(newXPos, newYPos)))+1;
-		    	delay = (int) (delay*(minTension*tensionFactor));
-			}
-			moveMotorsTo(newXPos, newYPos, delay);
-			currentXPos=newXPos;
-		    currentYPos=newYPos;
-		} else {
-			double x1=currentXPos;
-		    double y1=currentYPos;
-		    double x2=newXPos;
-		    double y2=newYPos;
+			moveMotorsTo(newFrontXPos, newFrontYPos, newBackXPos, newBackYPos, delay);
+			currentFrontXPos=newFrontXPos;
+		    currentFrontYPos=newFrontYPos;
 
-		    long startDelay = drawDelayInMicroSeconds;
-		    long endDelay = drawDelayInMicroSeconds;
-		    if (tensionFactor>0){
-			    // figure out the tension in the strings
-			    // I'm sure this logic isn't 100% correct.. but it seems to work good enough 
-			    double startMinTension = (1-Math.min(getLeftStringTension(x1, y1),getRightStringTension(x1, y1)))+1;
-			    double endMinTension = (1-Math.min(getLeftStringTension(x2, y2),getRightStringTension(x2, y2)))+1;
-		    	startDelay = (int) (startDelay*(startMinTension*tensionFactor));
-			    endDelay = (int) (endDelay*(endMinTension*tensionFactor));
-			}			    
+		    currentBackXPos=newBackXPos;
+		    currentBackYPos=newBackYPos;
+		} else {
+			double fx1=currentFrontXPos;
+		    double fy1=currentFrontYPos;
+		    double fx2=newFrontXPos;
+		    double fy2=newFrontYPos;
+
+			double bx1=currentBackXPos;
+		    double by1=currentBackYPos;
+		    double bx2=newBackXPos;
+		    double by2=newBackYPos;
 			
 		    List<RangeSet> rangeSets = new ArrayList<RangeSet>();
-			rangeSets.add(new RangeSet(x1, x2, unitIncrement));
-			rangeSets.add(new RangeSet(y1, y2, unitIncrement));
-			rangeSets.add(new RangeSet(startDelay, endDelay));
-
+			rangeSets.add(new RangeSet(fx1, fx2, unitIncrement));
+			rangeSets.add(new RangeSet(fy1, fy2, unitIncrement));
+			rangeSets.add(new RangeSet(bx1, bx2, unitIncrement));
+			rangeSets.add(new RangeSet(by1, by2, unitIncrement));
+			rangeSets.add(new RangeSet(drawDelayInMicroSeconds, drawDelayInMicroSeconds));
+			
 		    RangeHook hook = new RangeHook() {
 		    	@Override
 				public void processRange(double[] values) throws Exception {
-					moveMotorsTo(values[0], values[1], (int) values[2]); 
+					moveMotorsTo(values[0], values[1], values[2], values[3], (int) values[4]); 
 		    	}
 			};
 
@@ -207,44 +198,38 @@ public class VPlotterController extends PlotterController {
 			// only update current x and y if actually processed.
 			boolean processedRange = Range.processRanges(rangeSets, hook, true);
 			if (processedRange){
-				currentXPos=x2;
-			    currentYPos=y2;	
+				currentFrontXPos=fx2;
+			    currentFrontYPos=fy2;	
+				currentBackXPos=bx2;
+			    currentBackYPos=by2;				    
 			}
 		}
 	}
 
-	private void moveMotorsTo(double xPos, double yPos, long delay) throws Exception {
+	private void moveMotorsTo(double frontXPos, double frontYPos, double backXPos, double backYPos, long delay) throws Exception {
 	    // This moves the pen from the current Position to the new Position
 	    // by taking the current motor lengths and just moving them to their new lengths
-	    double newLeftMotorLength = getLeftMotorLength(xPos, yPos);
-	    double newRightMotorLength = getRightMotorLength(xPos, yPos);
+	    double newFrontLeftMotorLength = getLeftMotorLength(frontXPos, frontYPos);
+	    double newFrontRightMotorLength = getRightMotorLength(frontXPos, frontYPos);
 
-	    // convert motor lengths to steps
-	    int newLeftMotorStepNumber = getLeftMotorStepNumber(newLeftMotorLength);
-	    int newRightMotorStepNumber = getRightMotorStepNumber(newRightMotorLength);
+	    double newBackLeftMotorLength = getLeftMotorLength(backXPos, backYPos);
+	    double newBackRightMotorLength = getRightMotorLength(backXPos, backYPos);
 	    
-	    SketchyContext.hardwareController.moveMotors(newLeftMotorStepNumber - leftMotorStepNumber, newRightMotorStepNumber - rightMotorStepNumber, delay);
+	    // convert motor lengths to steps
+	    int newFrontLeftMotorStepNumber = getFrontLeftMotorStepNumber(newFrontLeftMotorLength);
+	    int newFrontRightMotorStepNumber = getFrontRightMotorStepNumber(newFrontRightMotorLength);
+	    
+	    int newBackLeftMotorStepNumber = getBackLeftMotorStepNumber(newBackLeftMotorLength);
+	    int newBackRightMotorStepNumber = getBackRightMotorStepNumber(newBackRightMotorLength);
+	    
+	    SketchyContext.hardwareController.moveMotors(newFrontLeftMotorStepNumber - frontLeftMotorStepNumber, newFrontRightMotorStepNumber - frontRightMotorStepNumber, newBackLeftMotorStepNumber - backLeftMotorStepNumber, newBackRightMotorStepNumber - backRightMotorStepNumber, delay);
 
-	    leftMotorStepNumber = newLeftMotorStepNumber;
-	    rightMotorStepNumber = newRightMotorStepNumber;
-	}
+	    frontLeftMotorStepNumber = newFrontLeftMotorStepNumber;
+	    frontRightMotorStepNumber = newFrontRightMotorStepNumber;
+	    backLeftMotorStepNumber = newBackLeftMotorStepNumber;
+	    backRightMotorStepNumber = newBackRightMotorStepNumber;
 
-	
-	private double getLeftStringTension(double xPos, double yPos){
-		double frameWidth=properties.getFrameWidth();
-		// for our purposes, don't return tensions above 1
-	    Point2D.Double point = getAbsolutePoint(xPos, yPos);
-	    double tension = (getLeftMotorLength(xPos, yPos) * (frameWidth-point.x)) / (point.y * frameWidth); 
-	    return Math.min(tension, 1);
 	}
-	
-	private double getRightStringTension(double xPos, double yPos){
-		double frameWidth=properties.getFrameWidth();
-	    Point2D.Double point = getAbsolutePoint(xPos, yPos);
-	    double tension = (getRightMotorLength(xPos, yPos) * (point.x)) / (point.y * frameWidth);
-	    return Math.min(tension, 1);
-	}
-
 	
 	private double getLeftMotorLength(double xPos, double yPos){
 	    Point2D.Double point = getAbsolutePoint(xPos, yPos);
@@ -257,22 +242,42 @@ public class VPlotterController extends PlotterController {
 	    return Math.sqrt(Math.pow(frameWidth-point.x, 2) + Math.pow(point.y, 2));
 	}
 
-	private int getLeftMotorStepNumber(double length){
+	
+	private int getFrontLeftMotorStepNumber(double length){
 		return (int)(properties.getLeftMotorStepsPerMM() * length);
 	}
 	
-	private int getRightMotorStepNumber(double length){
+	private int getFrontRightMotorStepNumber(double length){
+		return (int)(properties.getRightMotorStepsPerMM() * length);
+	}
+
+	
+	private int getBackLeftMotorStepNumber(double length){
+		return (int)(properties.getLeftMotorStepsPerMM() * length);
+	}
+	
+	private int getBackRightMotorStepNumber(double length){
 		return (int)(properties.getRightMotorStepsPerMM() * length);
 	}
 
 	@Override
-	public double getCurrentXPos() {
-		return currentXPos;
+	public double getCurrentFrontXPos() {
+		return currentFrontXPos;
 	}
 
 	@Override
-	public double getCurrentYPos() {
-		return currentYPos;
+	public double getCurrentFrontYPos() {
+		return currentFrontYPos;
+	}
+	
+	@Override
+	public double getCurrentBackXPos() {
+		return currentBackXPos;
+	}
+
+	@Override
+	public double getCurrentBackYPos() {
+		return currentBackYPos;
 	}
 
 }

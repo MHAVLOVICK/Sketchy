@@ -72,8 +72,10 @@ public class MovePen extends ServletAction {
 					
 					Map<String, String> map = (Map<String, String>) JSONUtils.fromJson(responseBody);
 					String drawingSizeString = map.get("drawingSize");
-					Double xPos = Double.parseDouble(map.get("xPos"));
-					Double yPos = Double.parseDouble(map.get("yPos"));
+					Double frontXPos = Double.parseDouble(map.get("frontXPos"));
+					Double frontYPos = Double.parseDouble(map.get("frontYPos"));
+					Double backXPos = Double.parseDouble(map.get("backXPos"));
+					Double backYPos = Double.parseDouble(map.get("backYPos"));
 					SketchyContext.initializeHardwareController();
 					SketchyContext.initializePlotterController();
 					
@@ -85,18 +87,25 @@ public class MovePen extends ServletAction {
 					double drawingLeft=(canvasWidth-drawingSize.getWidth())/2;
 					double drawingRight = drawingLeft+drawingSize.getWidth()-1;
 					
-					xPos+=drawingLeft;
+					frontXPos+=drawingLeft;
+					backXPos+=drawingLeft;
 					
-					if (xPos<drawingLeft) xPos=drawingLeft;
-					if (xPos>drawingRight) xPos=drawingRight;
-					if (yPos<0) yPos=0d;
-					if (yPos>drawingSize.getHeight()) yPos=drawingSize.getHeight();
+					if (frontXPos<drawingLeft) frontXPos=drawingLeft;
+					if (frontXPos>drawingRight) frontXPos=drawingRight;
+					if (frontYPos<0) frontYPos=0d;
+					if (frontYPos>drawingSize.getHeight()) frontYPos=drawingSize.getHeight();
+					
+					if (backXPos<drawingLeft) backXPos=drawingLeft;
+					if (backXPos>drawingRight) backXPos=drawingRight;
+					if (backYPos<0) backYPos=0d;
+					if (backYPos>drawingSize.getHeight()) backYPos=drawingSize.getHeight();
+
 					
 					if (!draw) {
-						plotterController.moveTo(xPos, yPos);
+						plotterController.moveTo(frontXPos, frontYPos, backXPos, backYPos);
 					}
 
-					plotterController.drawTo(xPos, yPos);
+					plotterController.drawTo(frontXPos, frontYPos, backXPos, backYPos);
 				} catch (NumberFormatException e){
 					
 				}

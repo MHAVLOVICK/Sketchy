@@ -150,12 +150,8 @@ public class SimplePathingProcessor extends PathingProcessor {
 			cancel=false;
 			paused=false;
 			progress=0;
-	    	SketchyContext.plotterController.enableMotors();
 			processImage(sketchyImage);
 			SketchyContext.plotterController.home();
-			if (SketchyContext.plotterControllerProperties.isDisableMotors()){
-				SketchyContext.plotterController.disableMotors();
-			}
 		    status = Status.COMPLETED;
 		} catch (Exception e){
 			status = Status.ERROR;
@@ -254,8 +250,8 @@ public class SimplePathingProcessor extends PathingProcessor {
 	    	double plotterYPos = ypos/heightDotsPerMM;
 	    	
 	    	penLifts++;
-			SketchyContext.plotterController.moveTo(plotterXPos, plotterYPos);
-			SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos);
+			SketchyContext.plotterController.moveTo(plotterXPos, plotterYPos, plotterXPos, plotterYPos);
+			SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos, plotterXPos, plotterYPos);
 
 	    	int lastDirection=-1;
 	   	    while(true){
@@ -292,7 +288,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 	   	    		
 	   		    	plotterXPos = xpos/widthDotsPerMM+xOffset;;
 	   		    	plotterYPos = ypos/heightDotsPerMM;
-	   		    	SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos);
+	   		    	SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos, plotterXPos, plotterYPos);
 	   	    	} else {
 	   	    		count++;
 	   	    		if ((count%100)==0){
@@ -309,7 +305,7 @@ public class SimplePathingProcessor extends PathingProcessor {
 
 	   	    		plotterXPos = xpos/widthDotsPerMM+xOffset;
 	   		    	plotterYPos = ypos/heightDotsPerMM;
-	   		    	SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos);
+	   		    	SketchyContext.plotterController.drawTo(plotterXPos, plotterYPos, plotterXPos, plotterYPos);
 	   	    	}
 	   	    }
 	   	    if (cancel){

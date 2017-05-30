@@ -62,27 +62,30 @@ public class TestHardwareSettings extends ServletAction {
 			SketchyContext.initializeHardwareController();
 			
 			String action = request.getParameter("action");
-			if (StringUtils.equalsIgnoreCase(action,"penUp")){
-				SketchyContext.hardwareController.penUp();
-			} else if (StringUtils.equalsIgnoreCase(action,"penDown")){
-				SketchyContext.hardwareController.penDown();
-			} else if (StringUtils.equalsIgnoreCase(action, "penCycle")){
-				for (int idx=0;idx<5;idx++){
-					SketchyContext.hardwareController.penUp();
-					SketchyContext.hardwareController.penDown();
-				}
-			} else if (StringUtils.equalsIgnoreCase(action,"leftMotorForward")){
+			if (StringUtils.equalsIgnoreCase(action,"frontLeftMotorForward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(1000, 0, 0);
-			} else if (StringUtils.equalsIgnoreCase(action,"leftMotorBackward")){
+				SketchyContext.hardwareController.moveMotors(1000, 0, 0,0, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"frontLeftMotorBackward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(-1000, 0, 0);
-			} else if (StringUtils.equalsIgnoreCase(action,"rightMotorForward")){
+				SketchyContext.hardwareController.moveMotors(-1000, 0, 0, 0, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"frontRightMotorForward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(0, 1000, 0);
-			} else if (StringUtils.equalsIgnoreCase(action,"rightMotorBackward")){
+				SketchyContext.hardwareController.moveMotors(0, 1000, 0, 0, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"frontRightMotorBackward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(0, -1000, 0);
+				SketchyContext.hardwareController.moveMotors(0, -1000, 0, 0, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"backLeftMotorForward")){
+  			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
+				SketchyContext.hardwareController.moveMotors(0, 0, 1000, 0, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"backLeftMotorBackward")){
+  			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
+				SketchyContext.hardwareController.moveMotors(0, 0, -1000, 0, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"backRightMotorForward")){
+  			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
+				SketchyContext.hardwareController.moveMotors(0, 0, 0, 1000, 0);
+			} else if (StringUtils.equalsIgnoreCase(action,"backRightMotorBackward")){
+  			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
+				SketchyContext.hardwareController.moveMotors(0, 0, 0, -1000, 0);
 			}
 			
 		} catch (Throwable t){

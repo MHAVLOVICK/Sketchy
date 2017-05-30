@@ -87,21 +87,30 @@ public class RunCommands extends ServletAction {
 							
 							if (StringUtils.equalsIgnoreCase(command, "HOME")) {
 								plotterController.home();
-							} else if (commandArray.length>=3){
-								double xPos = Double.parseDouble(commandArray[1]);
-								double yPos = Double.parseDouble(commandArray[2]);
-
-								xPos+=drawingLeft;
-								if (xPos<drawingLeft) xPos=drawingLeft;
-								if (xPos>drawingRight) xPos=drawingRight;
-								if (yPos<0) yPos=0d;
-								if (yPos>drawingSize.getHeight()) yPos=drawingSize.getHeight();
+							} else if (commandArray.length>=5){
+								double frontXPos = Double.parseDouble(commandArray[1]);
+								double frontYPos = Double.parseDouble(commandArray[2]);
+								double backXPos = Double.parseDouble(commandArray[3]);
+								double backYPos = Double.parseDouble(commandArray[4]);
+								
+								frontXPos+=drawingLeft;
+								backXPos+=drawingLeft;
+								
+								if (frontXPos<drawingLeft) frontXPos=drawingLeft;
+								if (frontXPos>drawingRight) frontXPos=drawingRight;
+								if (frontYPos<0) frontYPos=0d;
+								if (frontYPos>drawingSize.getHeight()) frontYPos=drawingSize.getHeight();
+								
+								if (backXPos<drawingLeft) backXPos=drawingLeft;
+								if (backXPos>drawingRight) backXPos=drawingRight;
+								if (backYPos<0) backYPos=0d;
+								if (backYPos>drawingSize.getHeight()) backYPos=drawingSize.getHeight();
 								
 								if (StringUtils.equalsIgnoreCase(command, "MOVE")){
-									plotterController.moveTo(xPos, yPos);
-									plotterController.drawTo(xPos, yPos);
+									plotterController.moveTo(frontXPos, frontYPos, backXPos, backYPos);
+									plotterController.drawTo(frontXPos, frontYPos, backXPos, backYPos);
 								} else if (StringUtils.equalsIgnoreCase(command, "DRAW")){
-									plotterController.drawTo(xPos, yPos);
+									plotterController.drawTo(frontXPos, frontYPos, backXPos, backYPos);
 								}
 							}
 						}

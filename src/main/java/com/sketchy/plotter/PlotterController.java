@@ -79,23 +79,13 @@ public abstract class PlotterController {
 	}
 
 	public abstract void shutDown();
-    
-	public abstract void penUp();
-	
-	public abstract void penDown();
 	
 	public abstract void home() throws Exception;
 	
-	public abstract void moveTo(double newXPos, double newYPos) throws Exception;
-
-	public abstract void drawTo(double newXPos, double newYPos) throws Exception;
-	
-	public abstract void enableMotors() throws Exception;
-	public abstract void disableMotors() throws Exception;
-	
-	public abstract double getCurrentXPos();
-	public abstract double getCurrentYPos();
-	
+	public abstract double getCurrentBackYPos(); 
+	public abstract double getCurrentBackXPos();
+	public abstract double getCurrentFrontYPos();
+	public abstract double getCurrentFrontXPos();
 	
 	@SuppressWarnings("unchecked")
 	public static Map<String, String> getPlotterControllerClassMap() throws Exception { 
@@ -108,6 +98,10 @@ public abstract class PlotterController {
 		}
 		return classMap;
 	}
+
+	public abstract void moveTo(double newFrontXPos, double newFrontYPos, double newBackXPos, double newBackYPos) throws Exception;
+	public abstract void drawTo(double newFrontXPos, double newFrontYPos, double newBackXPos, double newBackYPos) throws Exception;
+
 	
 }
 	

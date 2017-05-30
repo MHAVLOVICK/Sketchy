@@ -38,6 +38,7 @@ package com.sketchy.hardware;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,10 +87,88 @@ public abstract class HardwareController {
 		return _this;
 	}
 
-	public abstract void penUp();
-
-	public abstract void penDown();
+	public void moveMotors(int frontLeftSteps, int frontRightSteps, int backLeftSteps, int backRightSteps, long delayInMicroSeconds) throws Exception {
+		// Just return if no steps occurring
+		if ((frontLeftSteps==0) && (frontRightSteps==0) && (backLeftSteps==0) && (backRightSteps==0)) return;
 		
+		List<int[]> frontSteps = getSteps(frontLeftSteps, frontRightSteps);
+		List<int[]> backSteps = getSteps(backLeftSteps, backRightSteps);
+		
+		List<int[]> frontBackSteps = getSteps(frontSteps.size(), backSteps.size());
+		
+		int frontIdx=0;
+		int backIdx=0;
+		for (int[] frontBackStep:frontBackSteps){
+			Direction frontLeftMotorDirection = Direction.NONE;
+			Direction frontRightMotorDirection = Direction.NONE;
+			Direction backLeftMotorDirection = Direction.NONE;
+			Direction backRightMotorDirection = Direction.NONE;
+			
+			if (frontBackStep[0]>0){
+				frontLeftMotorDirection = Direction.fromValue(frontSteps.get(frontIdx)[0]);
+				frontRightMotorDirection = Direction.fromValue(frontSteps.get(frontIdx)[1]);
+				frontIdx++;
+			}
+
+			if (frontBackStep[1]>0){
+				backLeftMotorDirection = Direction.fromValue(backSteps.get(backIdx)[0]);
+				backRightMotorDirection = Direction.fromValue(backSteps.get(backIdx)[1]);
+				backIdx++;
+			}
+			
+			stepMotors(frontLeftMotorDirection, frontRightMotorDirection, backLeftMotorDirection, backRightMotorDirection, delayInMicroSeconds);
+		
+		}
+		
+	}
+
+	
+	
+	private List<int[]> getSteps(int leftSteps, int rightSteps){
+		List<int[]> returnSteps = new ArrayList<int[]>();
+		
+		// Just return if no steps occurring
+		if ((leftSteps!=0) || (rightSteps!=0)){
+			boolean swapSteps=Math.abs(rightSteps) > Math.abs(leftSteps);
+		    if (swapSteps){
+		    	int temp=leftSteps;
+		    	leftSteps=rightSteps;
+		    	rightSteps=temp;
+		    }
+
+		    int leftMotorDirection =  (int) Math.signum(leftSteps);
+		    int rightMotorDirection = (int) Math.signum(rightSteps);
+			
+		    leftSteps = Math.abs(leftSteps);  
+		    rightSteps = Math.abs(rightSteps);  
+		    
+	        int error=leftSteps/2;
+	        for (int steps=0;steps<leftSteps;steps++){
+		    	int stepRight=0;
+	        	error-=rightSteps;
+	        	if(error<0){
+	        		stepRight=rightMotorDirection;
+	        		error+=leftSteps;
+	        	}
+	        	if (swapSteps){
+	        		int[] stepArray = new int[2];
+	        		stepArray[0]=stepRight;
+	        		stepArray[1]=leftMotorDirection;
+	        		returnSteps.add(stepArray);
+	        	} else {
+	        		int[] stepArray = new int[2];
+	        		stepArray[0]=leftMotorDirection;
+	        		stepArray[1]=stepRight;
+	        		returnSteps.add(stepArray);
+	        	}
+		    }
+		}
+	    
+		return returnSteps;
+	}
+	
+	/*
+	
 	// Based on Bresenham's line algorithm
 	public void moveMotors(int leftSteps, int rightSteps, long delayInMicroSeconds) throws Exception {
 		// Just return if no steps occurring
@@ -117,14 +196,15 @@ public abstract class HardwareController {
         		error+=leftSteps;
         	}
         	if (swapSteps){
-        		stepMotors(stepRight, leftMotorDirection, delayInMicroSeconds);
+        		stepMotors(stepRight, leftMotorDirection, stepRight, leftMotorDirection, delayInMicroSeconds);
         	} else {
-        		stepMotors(leftMotorDirection, stepRight, delayInMicroSeconds);
+        		stepMotors(leftMotorDirection, stepRight, leftMotorDirection, stepRight, delayInMicroSeconds);
         	}
 	    }
 	}
+	*/
 	
-	public abstract void stepMotors(Direction leftMotorDirection, Direction rightMotorDirection, long delayInMicroSeconds);
+	public abstract void stepMotors(Direction frontLeftMotorDirection, Direction frontRightMotorDirection, Direction backLeftMotorDirection, Direction backRightMotorDirection, long delayInMicroSeconds);
 	
 	public abstract void enableMotors();
 	

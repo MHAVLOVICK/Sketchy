@@ -78,19 +78,8 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 		motors.add(new MetaDataProperty("disableMotors","Disable Motors after drawing?",AttributeType.Boolean,false));
 		metaData.add(motors);
 		
-
-		MetaDataGroup other = new MetaDataGroup("Other");
-		other.add(new MetaDataProperty("tensionFactor","Tension Factor",AttributeType.Decimal, false));
-
-		metaData.add(other);
-		
 		return metaData;
 	}
-	
-	// Tension Factor.. The higher the number, the slower the quickdraw will draw the further from the top
-	// and near the edges
-	// set to 0.0 to disable tension compensation 
-	double tensionFactor = 1; // standard Tension   
 	
 	private double yPosOffset=-20;
 	
@@ -128,14 +117,6 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 	@Override
 	public double getCanvasHeight() {
 		return canvasHeight;
-	}
-
-	public double getTensionFactor() {
-		return tensionFactor;
-	}
-
-	public void setTensionFactor(double tensionFactor) {
-		this.tensionFactor = tensionFactor;
 	}
 
 	public double getLeftMotorStepsPerMM() {
@@ -176,11 +157,11 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 	}
 
 	@Override
-	public double getYPosOffset() {
+	public double getyPosOffset() {
 		return yPosOffset;
 	}
 	
-	public void setYPosOffset(double yPosOffset) {
+	public void setyPosOffset(double yPosOffset) {
 		this.yPosOffset = yPosOffset;
 	}
 

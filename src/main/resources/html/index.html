@@ -143,12 +143,20 @@ Public License instead of this License.
 									    <legend>Coordinates</legend>
 										<table>
 											<tr>
-												<td>X Coordinate</td>
-												<td colspan="3"><input type="text" name="xPos"></td>
+												<td>Front X Coordinate</td>
+												<td colspan="3"><input type="text" name="frontXPos"></td>
 											</tr>
 											<tr>
-												<td>Y Coordinate</td>
-												<td colspan="3"><input type="text" name="yPos"></td>
+												<td>Front Y Coordinate</td>
+												<td colspan="3"><input type="text" name="frontYPos"></td>
+											</tr>
+											<tr>
+												<td>Back X Coordinate</td>
+												<td colspan="3"><input type="text" name="backXPos"></td>
+											</tr>
+											<tr>
+												<td>Back Y Coordinate</td>
+												<td colspan="3"><input type="text" name="backYPos"></td>
 											</tr>
 											<tr>
 												<td>&nbsp;</td>
@@ -161,15 +169,15 @@ Public License instead of this License.
 										<table>
 											<tr>
 												<td colspan="2">
-<textarea name="commands" cols="40" rows="20">
+<textarea name="commands" cols="50" rows="20">
 # This is used for simple scripts
 # for education and testing or just 
 # to create simple shapes
 #
 # Commands are:
 # HOME 
-# MOVE <X> <Y>
-# DRAW <X> <Y>
+# MOVE <FrontX> <FrontY> <BackX> <BackY>
+# DRAW <FrontX> <FrontY> <BackX> <BackY>
 # 
 # Lines that begin 
 # with # pound sign 
@@ -177,15 +185,15 @@ Public License instead of this License.
 # as invalid commands
 # Example:
 
-MOVE 0 0
-DRAW 200 0
-DRAW 200 250
-DRAW 0 250
-DRAW 0 0
-MOVE 50 100
-DRAW 150 200
-MOVE 50 200
-DRAW 150 100
+MOVE 0 0 0 0
+DRAW 200 0 200 0
+DRAW 200 250 200 250
+DRAW 0 250 0 250
+DRAW 0 0 0 0
+MOVE 50 100 50 100
+DRAW 150 200 150 200
+MOVE 50 200 50 200
+DRAW 150 100 150 100
 
 </textarea>
 												</td>
