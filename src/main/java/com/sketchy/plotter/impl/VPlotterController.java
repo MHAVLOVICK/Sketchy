@@ -92,7 +92,7 @@ public class VPlotterController extends PlotterController {
 		// set homeXPos to the center of the canvas area
 		// set homeYPos to the canvasTopPosition
 		homeXPos = (canvasWidth/2); 
-		homeYPos = properties.getYPosOffset();
+		homeYPos = properties.getyPosOffset();
 
 	    // *** Future Use *** 
 		// based on the recommended QuickDraw configuration, the unitIncrement should be about double

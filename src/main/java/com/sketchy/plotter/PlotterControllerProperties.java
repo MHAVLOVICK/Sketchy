@@ -48,7 +48,7 @@ public abstract class PlotterControllerProperties extends MetaDataObject {
 	public abstract double getFrameHeight();
 	public abstract double getCanvasWidth();
 	public abstract double getCanvasHeight();
-	public abstract double getYPosOffset();
+	public abstract double getyPosOffset();
 	
 	public abstract int getDrawSpeed();
 	public abstract int getMoveSpeed();
