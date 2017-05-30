@@ -55,10 +55,33 @@ $( document ).ready(function() {
 		loadDrawingSettings();	
 	});
 	
+	$("#command-tab").on("click", function(e){
+		loadCommandForm();	
+	});
+	
+	
+	$("#commandHome").on("click", function(e){
+		commandHome();	
+	});
+	
+	$("#commandMoveTo").on("click", function(e){
+		commandMoveTo();	
+	});
+	
+	$("#commandDrawTo").on("click", function(e){
+		commandDrawTo();	
+	});
+	
+	$("#commandRunScript").on("click", function(e){
+		commandRunScript();	
+	});
+
+	
+	
+	
 	$("#saveDrawingSettingsButton").on("click", function(e){
 		saveDrawingSettings();
 	});
-	
 	
 	$("#settings-pathing-tab").on("click", function(e){
 		$("#pathingProcessorClass").val("");
@@ -817,6 +840,86 @@ function populateDrawingSettings(data){
 		buildPageProperties($("#drawingPropertiesDiv"), data.properties.metaData);
 		js2form($("#drawingSettingsForm")[0], data.properties);
 	}
+}
+
+function loadCommandForm() {
+	jsonGetRequest("/servlet/GetRenderImageAttributes","", function(data){
+		populateCommandForm(data);
+	});
+}
+
+
+function populateCommandForm(data){
+	var selectedDrawingSizeOption = $('#commandDrawingSize option:selected').val();
+	
+	$('#commandDrawingSize').html("");
+	if (data!=null){
+		$.each(data.drawingSizes, function(key, value) {   
+		     $('#commandDrawingSize')
+		         .append($("<option></option>")
+		         .attr("value",value)
+		         .text(value)); 
+		});
+	}
+	
+	$("#commandDrawingSize option[value='" + selectedDrawingSizeOption +"']").prop('selected', true);
+}
+
+
+function commandHome() {
+	var commandForm = form2js('commandForm', '.', true,null,false);
+	jsonPostRequest("/servlet/MovePen?home=Y","", 
+		function(data){
+			//showMessage("Network Settings Saved!  Reboot Required.");
+    		//loadNetworkSettings();
+	    },
+	    function(data){
+	    	//showError(data.message);	
+    		//loadNetworkSettings();
+	    }
+	);
+}
+
+function commandMoveTo() {
+	var commandForm = form2js('commandForm', '.', true,null,false);
+	jsonPostRequest("/servlet/MovePen",JSON.stringify(commandForm), 
+		function(data){
+			//showMessage("Network Settings Saved!  Reboot Required.");
+    		//loadNetworkSettings();
+	    },
+	    function(data){
+	    	//showError(data.message);	
+    		//loadNetworkSettings();
+	    }
+	);
+}
+
+function commandDrawTo() {
+	var commandForm = form2js('commandForm', '.', true,null,false);
+	jsonPostRequest("/servlet/MovePen?draw=Y",JSON.stringify(commandForm), 
+		function(data){
+			//showMessage("Network Settings Saved!  Reboot Required.");
+    		//loadNetworkSettings();
+	    },
+	    function(data){
+	    	//showError(data.message);	
+    		//loadNetworkSettings();
+	    }
+	);
+}
+
+function commandRunScript() {
+	var commandForm = form2js('commandForm', '.', true,null,false);
+	jsonPostRequest("/servlet/RunCommands",JSON.stringify(commandForm), 
+		function(data){
+			//showMessage("Network Settings Saved!  Reboot Required.");
+    		//loadNetworkSettings();
+	    },
+	    function(data){
+	    	//showError(data.message);	
+    		//loadNetworkSettings();
+	    }, true, 6000000 // 10 minute timeout.. should only really be used for simple scripts
+	);
 }
 
 function loadUpgradeSettings() {

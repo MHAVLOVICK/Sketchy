@@ -73,6 +73,8 @@ public class VPlotterController extends PlotterController {
 	
 	private int leftMotorStepNumber=0;
 	private int rightMotorStepNumber=0;
+	
+	private double unitIncrement=0;
 
 
 	private void init() {
@@ -90,11 +92,12 @@ public class VPlotterController extends PlotterController {
 		// set homeXPos to the center of the canvas area
 		// set homeYPos to the canvasTopPosition
 		homeXPos = (canvasWidth/2); 
-		homeYPos = properties.getyPosOffset();
+		homeYPos = properties.getYPosOffset();
 
 	    // *** Future Use *** 
 		// based on the recommended QuickDraw configuration, the unitIncrement should be about double
-		// unitIncrement = Math.min(1.0/leftMotorStepsPerUnit,1.0/rightMotorStepsPerUnit)*2;
+		// using a multiplier of 4 instead of 2 for now... can decrease as required if we think it's needed
+		unitIncrement = Math.min(1.0/properties.getLeftMotorStepsPerMM(),1.0/properties.getRightMotorStepsPerMM())*4;
 		
 		resetCurrentPositionToHome();
 	}
@@ -155,7 +158,8 @@ public class VPlotterController extends PlotterController {
 	}
 	
 	public synchronized void drawTo(double newXPos, double newYPos) throws Exception {
-		double unitIncrement = properties.getUnitIncrement();
+		//double unitIncrement = properties.getUnitIncrement();
+		
 		long drawDelayInMicroSeconds = properties.getDrawDelayInMicroSeconds();
 		double tensionFactor=properties.getTensionFactor();
 
@@ -259,6 +263,16 @@ public class VPlotterController extends PlotterController {
 	
 	private int getRightMotorStepNumber(double length){
 		return (int)(properties.getRightMotorStepsPerMM() * length);
+	}
+
+	@Override
+	public double getCurrentXPos() {
+		return currentXPos;
+	}
+
+	@Override
+	public double getCurrentYPos() {
+		return currentYPos;
 	}
 
 }

@@ -99,6 +99,7 @@ Public License instead of this License.
 			<div id="main-tabs" style="clear:both">
 				<ul>
 					<li><a href="#image-page" id="image-tab">Image</a></li>
+					<li><a href="#command-page" id="command-tab">Commands</a></li>
 					<li><a href="#settings-page" id="settings-tab">Settings</a></li>
 					<li><a href="#advanced-page" id="advanced-tab">Advanced</a></li>
 				</ul>
@@ -129,6 +130,76 @@ Public License instead of this License.
 						  	</td>
 				  		</tr>
 					</table>
+			  	</div>
+			  	
+			  	<div id="command-page">
+				  	<form id="commandForm">
+				  		<span title="Drawing size">Drawing Size:</span> <select name="drawingSize" id="commandDrawingSize"></select><br/><br/>
+				  	
+				  		<table>
+					  		<tr>
+						  		<td valign="top">
+						  			<fieldset>
+									    <legend>Coordinates</legend>
+										<table>
+											<tr>
+												<td>X Coordinate</td>
+												<td colspan="3"><input type="text" name="xPos"></td>
+											</tr>
+											<tr>
+												<td>Y Coordinate</td>
+												<td colspan="3"><input type="text" name="yPos"></td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td align="right"><input type="button" id="commandHome" value="Home"></td>
+												<td align="right"><input type="button" id="commandMoveTo" value="Move"></td>
+												<td align="right"><input type="button" id="commandDrawTo" value="Draw"></td>
+											</tr>
+										</table>
+									    <legend>Commands</legend>
+										<table>
+											<tr>
+												<td colspan="2">
+<textarea name="commands" cols="40" rows="20">
+# This is used for simple scripts
+# for education and testing or just 
+# to create simple shapes
+#
+# Commands are:
+# HOME 
+# MOVE <X> <Y>
+# DRAW <X> <Y>
+# 
+# Lines that begin 
+# with # pound sign 
+# are ignored as well 
+# as invalid commands
+# Example:
+
+MOVE 0 0
+DRAW 200 0
+DRAW 200 250
+DRAW 0 250
+DRAW 0 0
+MOVE 50 100
+DRAW 150 200
+MOVE 50 200
+DRAW 150 100
+
+</textarea>
+												</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td align="right"><input type="button" id="commandRunScript" value="Run Commands"></td>
+											</tr>
+										</table>										
+									</fieldset>
+								</td>
+					  		</tr>
+						</table>
+					</form>
 			  	</div>
 			  	
 			  	<div id="settings-page">

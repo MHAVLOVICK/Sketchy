@@ -175,11 +175,12 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 		return Math.max(leftMotorDelay, rightMotorDelay);
 	}
 
-	public double getyPosOffset() {
+	@Override
+	public double getYPosOffset() {
 		return yPosOffset;
 	}
-
 	public void setyPosOffset(double yPosOffset) {
+	public void setYPosOffset(double yPosOffset) {
 		this.yPosOffset = yPosOffset;
 	}
 
@@ -222,5 +223,6 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 	public void setDisableMotors(boolean disableMotors) {
 		this.disableMotors = disableMotors;
 	}
+
 	
 }
