@@ -179,7 +179,7 @@ public class VPlotterControllerProperties extends PlotterControllerProperties {
 	public double getYPosOffset() {
 		return yPosOffset;
 	}
-	public void setyPosOffset(double yPosOffset) {
+	
 	public void setYPosOffset(double yPosOffset) {
 		this.yPosOffset = yPosOffset;
 	}
