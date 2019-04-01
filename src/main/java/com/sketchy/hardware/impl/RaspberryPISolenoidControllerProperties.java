@@ -64,8 +64,8 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 		leftMotorGroup.add(new MetaDataProperty("leftMotorEnablePinNumber","Enable Pin Number",AttributeType.List, RaspberryPiPins.pins));
 		leftMotorGroup.add(new MetaDataProperty("leftMotorInvertDirection","Invert Direction",AttributeType.Boolean));
 		leftMotorGroup.add(new MetaDataProperty("leftMotorMinStepPeriodInMicroseconds","Min Step Period(microseconds)",AttributeType.Number));
-		leftMotorGroup.add(new MetaDataProperty("leftMotorForward","Motor Forward (1000 steps)",AttributeType.Button));		
-		leftMotorGroup.add(new MetaDataProperty("leftMotorBackward","Motor Backward (1000 steps)",AttributeType.Button));			
+		leftMotorGroup.add(new MetaDataProperty("leftMotorForward","Motor Forward (10000 steps)",AttributeType.Button));		
+		leftMotorGroup.add(new MetaDataProperty("leftMotorBackward","Motor Backward (10000 steps)",AttributeType.Button));			
 		metaData.add(leftMotorGroup);
 
 		MetaDataGroup rightMotorGroup = new MetaDataGroup("Right Motor");
@@ -74,8 +74,8 @@ public class RaspberryPISolenoidControllerProperties extends HardwareControllerP
 		rightMotorGroup.add(new MetaDataProperty("rightMotorEnablePinNumber","Enable Pin Number",AttributeType.List, RaspberryPiPins.pins));
 		rightMotorGroup.add(new MetaDataProperty("rightMotorInvertDirection","Invert Direction",AttributeType.Boolean));
 		rightMotorGroup.add(new MetaDataProperty("rightMotorMinStepPeriodInMicroseconds","Min Step Period(microseconds)",AttributeType.Number));
-		rightMotorGroup.add(new MetaDataProperty("rightMotorForward","Motor Forward (1000 steps)",AttributeType.Button));		
-		rightMotorGroup.add(new MetaDataProperty("rightMotorBackward","Motor Backward (1000 steps)",AttributeType.Button));			
+		rightMotorGroup.add(new MetaDataProperty("rightMotorForward","Motor Forward (10000 steps)",AttributeType.Button));		
+		rightMotorGroup.add(new MetaDataProperty("rightMotorBackward","Motor Backward (10000 steps)",AttributeType.Button));			
 		metaData.add(rightMotorGroup);
 
 		MetaDataGroup penGroup = new MetaDataGroup("Pen");
