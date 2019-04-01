@@ -73,16 +73,16 @@ public class TestHardwareSettings extends ServletAction {
 				}
 			} else if (StringUtils.equalsIgnoreCase(action,"leftMotorForward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(10000, 0, 0);
+				SketchyContext.hardwareController.moveMotors(1000, 0, 0);
 			} else if (StringUtils.equalsIgnoreCase(action,"leftMotorBackward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(-10000, 0, 0);
+				SketchyContext.hardwareController.moveMotors(-1000, 0, 0);
 			} else if (StringUtils.equalsIgnoreCase(action,"rightMotorForward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(0, 10000, 0);
+				SketchyContext.hardwareController.moveMotors(0, 1000, 0);
 			} else if (StringUtils.equalsIgnoreCase(action,"rightMotorBackward")){
   			    // Using delay of 0, it will be restricted by the Minimum Step Period for the motor
-				SketchyContext.hardwareController.moveMotors(0, -10000, 0);
+				SketchyContext.hardwareController.moveMotors(0, -1000, 0);
 			}
 			
 		} catch (Throwable t){
