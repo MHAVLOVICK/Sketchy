@@ -112,7 +112,7 @@ public class RunCommands extends ServletAction {
 				plotterController.home();
 			}
 		} catch (Throwable t){
-			jsonServletResult = new JSONServletResult(Status.ERROR, "Error Saving Hardware Settings! " + t.getMessage());
+			jsonServletResult = new JSONServletResult(Status.ERROR, "Error Running Commands! " + t.getMessage());
 		} finally {
 			SketchyContext.hardwareControllerProperties = oldHardwareControllerProperties;
 		}
